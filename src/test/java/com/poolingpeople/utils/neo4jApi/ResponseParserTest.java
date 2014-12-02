@@ -16,6 +16,17 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ResponseParserTest {
+    
+    
+    @Test
+    @Ignore
+    public void test(){
+        String q = "MATCH (n:uuid { uuid: \"61a26134-062d-401d-93b9-5cce763f1835\" }) RETURN n.dateIssued AS dateIssued, n.occupation AS occupation, n.givenName AS givenName, n.postalCode AS postalCode, n.privacy AS privacy, n.description AS description, n.dateModified AS dateModified, n.type AS type, n.uuid AS uuid, n.password AS password, n.familyName AS familyName, n.registrationCode AS registrationCode, n.location AS location, n.state AS state, n.addressLocality AS addressLocality, n.email AS email\n";
+        ResponseParser responseParser = new ResponseParser();
+        Neo4jRestApiAdapter adapter = new Neo4jRestApiAdapterImpl();
+
+        System.out.println(adapter.runParametrizedCypherQuery(q));
+    }
 
     @Test
     public void testListResponse() throws Exception {

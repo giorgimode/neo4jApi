@@ -35,7 +35,7 @@ public class ResponseParser {
                 Map.Entry<String,Map<String,Object>> column =
                         getColumn(((JsonString) columnNames.get(i)).getString(), row.get(i));
 
-                rowResult.put(column.getKey(), column.getValue());
+                rowResult.put(column.getKey(), column.getValue().get(column.getKey()));
 
             }
             result.add(rowResult);

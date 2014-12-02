@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.poolingpeople</groupId>
-    <artifactId>neo4JApi</artifactId>
+    <artifactId>neo4jApi</artifactId>
     <version>0.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
