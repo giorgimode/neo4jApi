@@ -7,6 +7,7 @@ import org.junit.Test;
 import javax.ws.rs.core.Response;
 import java.io.BufferedInputStream;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,18 +15,70 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+//import org.neo4j.shell;
 
 public class ResponseParserTest {
     
     
     @Test
     @Ignore
-    public void test(){
-        String q = "MATCH (n:uuid { uuid: \"61a26134-062d-401d-93b9-5cce763f1835\" }) RETURN n.dateIssued AS dateIssued, n.occupation AS occupation, n.givenName AS givenName, n.postalCode AS postalCode, n.privacy AS privacy, n.description AS description, n.dateModified AS dateModified, n.type AS type, n.uuid AS uuid, n.password AS password, n.familyName AS familyName, n.registrationCode AS registrationCode, n.location AS location, n.state AS state, n.addressLocality AS addressLocality, n.email AS email\n";
+    public void testRunParametrizedCypherQuery(){
+        String q = "MATCH (n:uuid { uuid: \"61a26134-062d-401d-93b9-5cce763f1835\" }) " +
+                "RETURN n.dateIssued AS dateIssued, n.occupation AS occupation, n.givenName AS givenName, " +
+                "n.postalCode AS postalCode, n.privacy AS privacy, n.description AS description, " +
+                "n.dateModified AS dateModified, n.type AS type, n.uuid AS uuid, n.password AS password, " +
+                "n.familyName AS familyName, n.registrationCode AS registrationCode, n.location AS location, " +
+                "n.state AS state, n.addressLocality AS addressLocality, n.email AS email\n";
+
         ResponseParser responseParser = new ResponseParser();
         Neo4jRestApiAdapter adapter = new Neo4jRestApiAdapterImpl();
 
-        System.out.println(adapter.runParametrizedCypherQuery(q));
+        List<Map<String, Object>> r = adapter.runParametrizedCypherQuery(q);
+    }
+
+    @Test
+    public void testShortCypherResponse(){
+        ResponseParser responseParser = new ResponseParser();
+
+        Collection<Map<String,Map<String,Object>>> result =
+                responseParser.parse(getClass().getClassLoader().getResourceAsStream("shortCypherResponse.json"));
+
+        assertEquals(1, result.size());
+        Map<String,Map<String,Object>> row = result.iterator().next();
+        Map<String,Object> component = row.get("component");
+        assertNotNull(component);
+
+        assertEquals(component.size(), 15);
+        assertEquals(component.get("occupation"), "Developer");
+        assertEquals(component.get("location"), "Darmstadt");
+        assertEquals(component.get("type"), "person");
+        assertEquals(component.get("description"), "Das ist Sebastian");
+
+//        String query = "MATCH (component)-[r:owner|observer]->(main:uuid {uuid:{main}}) return component";
+//
+//        Neo4jRestApiAdapter adapter = new Neo4jRestApiAdapterImpl();
+//
+//        Map<String, Object> params = new HashMap<>();
+//        params.put("main", "1e5e4dbe-32ff-4cf9-a7fa-243fed09e8fa");
+//
+//
+//        result = adapter.runCypherQuery(query, params);
+//
+//        assertEquals(1, result.size());
+//        row = result.iterator().next();
+//        component = row.get("component");
+//        assertNotNull(component);
+//
+//        assertEquals(component.size(), 15);
+//        assertEquals(component.get("occupation"), "Developer");
+//        assertEquals(component.get("location"), "Darmstadt");
+//        assertEquals(component.get("type"), "person");
+//        assertEquals(component.get("description"), "Das ist Sebastian");
+    }
+
+    @Test
+    public void testShortCypherResponseOnServer(){
+
     }
 
     @Test
