@@ -1,8 +1,11 @@
 package com.poolingpeople.utils.neo4jApi;
 
+import com.poolingpeople.testUtils.EmbeddedTestServer;
+import com.poolingpeople.testUtils.LocalNeo4jRestServer;
 import org.apache.commons.io.IOUtils;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import javax.ws.rs.core.Response;
 import java.io.BufferedInputStream;
@@ -17,9 +20,27 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 //import org.neo4j.shell;
 
+@RunWith(JUnit4.class)
 public class ResponseParserTest {
-    
-    
+
+    static LocalNeo4jRestServer neo4jServer;
+
+    @BeforeClass
+    public static void startNeo4j() {
+        neo4jServer = new EmbeddedTestServer().withPropertiesFile("neo4j-server.properties");
+        neo4jServer.startup();
+    }
+
+    @After
+    public void tearDown() {
+        neo4jServer.clean();
+    }
+
+    @AfterClass
+    public static void stopNeo4j() throws Exception {
+        neo4jServer.shutdown();
+    }
+
     @Test
     @Ignore
     public void testRunParametrizedCypherQuery(){
@@ -136,13 +157,13 @@ public class ResponseParserTest {
     }
 
     @Test
-    @Ignore
     public void testErrorResponseOnServer() throws Exception {
         ResponseParser responseParser = new ResponseParser();
         Neo4jRestApiAdapter adapter = new Neo4jRestApiAdapterImpl();
 
         try{
             adapter.runParametrizedCypherQuery("match n retun n.uuid");
+            fail();
         }catch (Neo4jClientErrorException e){
             assertEquals(e.getMessage(), "Invalid input 'n': expected 'r/R' (line 1, column 13)\n\"match n retun n.uuid\"\n             ^");
             assertEquals(e.getExceptionFullName(), "org.neo4j.cypher.SyntaxException");
@@ -152,6 +173,7 @@ public class ResponseParserTest {
 
         try{
             adapter.runParametrizedCypherQuery("match n retun n.uuid", null);
+            fail();
         }catch (Neo4jClientErrorException e){
             assertEquals(e.getMessage(), "Invalid input 'n': expected 'r/R' (line 1, column 13)\n\"match n retun n.uuid\"\n             ^");
             assertEquals(e.getExceptionFullName(), "org.neo4j.cypher.SyntaxException");
@@ -161,8 +183,9 @@ public class ResponseParserTest {
 
         try{
             adapter.runCypherQuery("match n retun n.uuid", null);
+            fail();
         }catch (Neo4jClientErrorException e){
-            assertEquals(e.getMessage(), "Invalid input 'n': expected 'r/R' (line 1, column 13)\n\"match n retun n.uuid\"\n             ^");
+            assertEquals(e.getMessage(), "Invalid in2put 'n': expected 'r/R' (line 1, column 13)\n\"match n retun n.uuid\"\n             ^");
             assertEquals(e.getExceptionFullName(), "org.neo4j.cypher.SyntaxException");
             assertEquals(e.getExceptionName(), "SyntaxException");
             return;
