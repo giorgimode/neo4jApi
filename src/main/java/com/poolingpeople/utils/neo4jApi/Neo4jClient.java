@@ -16,16 +16,26 @@ import javax.ws.rs.core.MediaType;
  */
 public class Neo4jClient {
 
-    // TODO: put host and port into config file
-    String host = "127.0.0.1";
-    String port = "7474";
+    String host;
+    String port;
 
-//    @Inject
     Logger logger = LoggerFactory.getLogger(Neo4jClient.class);
 
     ObjectMapper mapper = new ObjectMapper();
 
+    @Deprecated
     public Neo4jClient() {
+        this("7474");
+    }
+
+    @Deprecated
+    public Neo4jClient(String port) {
+        this("localhost", port);
+    }
+
+    public Neo4jClient(String host, String port) {
+        this.host = host;
+        this.port = port;
     }
 
     public Neo4jResponse post(Neo4jRequest neo4jRequest){

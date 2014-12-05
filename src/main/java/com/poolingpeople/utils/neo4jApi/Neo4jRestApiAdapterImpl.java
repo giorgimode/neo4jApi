@@ -11,14 +11,21 @@ import java.util.*;
 //@ApplicationScoped
 public class Neo4jRestApiAdapterImpl implements Neo4jRestApiAdapter{
 
-//    @Inject
-    Neo4jClient neo4jClient = new Neo4jClient();
+    Neo4jClient neo4jClient;
 
-//    @Inject
     Logger logger = LoggerFactory.getLogger(this.getClass());
     ResponseParser responseParser = new ResponseParser();
 
     public Neo4jRestApiAdapterImpl(){
+        this("7474");
+    }
+
+    public Neo4jRestApiAdapterImpl(String port){
+        this("localhost", port);
+    }
+
+    public Neo4jRestApiAdapterImpl(String host, String port){
+        neo4jClient = new Neo4jClient(host, port);
     }
 
     @Override
