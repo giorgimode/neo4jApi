@@ -1,6 +1,5 @@
 package com.poolingpeople.utils.neo4jApi;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +19,6 @@ public class Neo4jClient {
     String port;
 
     Logger logger = LoggerFactory.getLogger(Neo4jClient.class);
-
-    ObjectMapper mapper = new ObjectMapper();
 
     @Deprecated
     public Neo4jClient() {

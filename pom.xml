@@ -32,11 +32,13 @@
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-jaxrs</artifactId>
             <version>1.9.13</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
             <version>3.0.8.Final</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.poolingpeople</groupId>
