@@ -25,6 +25,14 @@ public class Neo4jRestApiAdapterImpl implements Neo4jRestApiAdapter{
     }
 
     public Neo4jRestApiAdapterImpl(String host, String port){
+
+        if("localhost".equals(host) && System.getenv("neo4j") != null) {
+            host = System.getenv("neo4j");
+            logger.info("envelope found. Using " + host + ":" + port);
+        }else{
+            logger.info("envelope NOT found. Using " + host + ":" + port);
+        }
+
         neo4jClient = new Neo4jClient(host, port);
     }
 
