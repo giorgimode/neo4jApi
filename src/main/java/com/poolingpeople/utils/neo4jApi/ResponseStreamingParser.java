@@ -1,15 +1,19 @@
 package com.poolingpeople.utils.neo4jApi;
 
 import javax.json.*;
+import javax.json.stream.JsonParser;
 import javax.ws.rs.core.Response;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
  * Created by alacambra on 05.11.14.
  */
-public class ResponseParser {
+public class ResponseStreamingParser {
 
     public List<Map<String,Object>> parseList(String json) {
         return parseList(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)));
@@ -29,32 +33,50 @@ public class ResponseParser {
      * @return
      */
     public List<Map<String,Object>> parseList(InputStream inputStream) {
-        Reader reader = new InputStreamReader(inputStream);
 
-        JsonReader jsonReader = Json.createReader(reader);
-        JsonObject jsonObject = jsonReader.readObject();
+        JsonParser parser = Json.createParser(inputStream);
 
-        JsonArray columnNames = (JsonArray) jsonObject.get("columns");
-        JsonArray rows = (JsonArray) jsonObject.get("data");
+        ParsingState state = null;
 
-        List<Map<String,Object>> result = new ArrayList<>();
+        while (parser.hasNext()) {
+            JsonParser.Event event = parser.next();
+            switch (event) {
+                case START_OBJECT:
+                    if(state == null){
+                        state = ParsingState.BEGIN;
+                    }
+                    break;
 
-        for(JsonValue rowValue : rows){
+                case END_OBJECT:
 
-            JsonArray row = (JsonArray) rowValue;
-            Map<String,Object> rowResult = new HashMap<>();
+                    break;
 
-            for(int i = 0; i < columnNames.size(); i++){
-                Map.Entry<String,Map<String,Object>> column =
-                        getColumn(((JsonString) columnNames.get(i)).getString(), row.get(i));
+                case START_ARRAY:
+                    if(state == ParsingState.BEGIN){
+                        state = ParsingState.READING_COLUMNS;
+                    }
+                    break;
 
-                rowResult.put(column.getKey(), column.getValue().get(column.getKey()));
+                case END_ARRAY:
+                    break;
+
+                case KEY_NAME:
+                    break;
+
+                case VALUE_STRING:
 
             }
-            result.add(rowResult);
         }
 
-        return result;
+    return null;
+    }
+
+    private void addColumnName(String name){
+
+    }
+
+    private enum ParsingState{
+        BEGIN, READING_COLUMNS, READING_DATA, READING_ROW, ERRORS
     }
 
     public List<Map<String, Object>> parseSimpleListOrException(Response response){
