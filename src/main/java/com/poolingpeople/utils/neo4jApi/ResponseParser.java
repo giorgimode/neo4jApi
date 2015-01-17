@@ -44,33 +44,31 @@ public class ResponseParser {
         return result;
     }
 
-    public List<Map<String, Object>> parseSimpleListOrException(Neo4jResponse response){
+    public List<Map<String, Object>> parseSimpleListOrException(Response response){
 
-        Response.Status.Family codeFamily =
-                Response.Status.fromStatusCode(response.getReceivedResponse().getStatus()).getFamily();
+        Response.Status.Family codeFamily = response.getStatusInfo().getFamily();
 
         switch (codeFamily){
             case CLIENT_ERROR:
                 throw parseException(response);
             case SERVER_ERROR:
-                throw new Neo4jException(response.getReceivedResponse(), "Neo4j reported 5xx error");
+                throw new Neo4jException(response, "Neo4j reported 5xx error");
             default:
-                return parseList(response.getRawResponseBody());
+                return parseList(response.readEntity(String.class));
         }
     }
 
-    public Collection<Map<String,Map<String,Object>>> parseOrException(Neo4jResponse response){
+    public Collection<Map<String,Map<String,Object>>> parseOrException(Response response){
 
-        Response.Status.Family codeFamily =
-                Response.Status.fromStatusCode(response.getReceivedResponse().getStatus()).getFamily();
+        Response.Status.Family codeFamily = response.getStatusInfo().getFamily();
 
         switch (codeFamily){
             case CLIENT_ERROR:
                 throw parseException(response);
             case SERVER_ERROR:
-                throw new Neo4jException(response.getReceivedResponse(), "Neo4j reported 5xx error");
+                throw new Neo4jException(response, "Neo4j reported 5xx error");
             default:
-                return parse(response.getRawResponseBody());
+                return parse(response.readEntity(String.class));
         }
     }
 
@@ -135,17 +133,17 @@ public class ResponseParser {
         return entry;
     }
 
-    private Neo4jClientErrorException parseException(Neo4jResponse response){
+    private Neo4jClientErrorException parseException(Response response){
 
         Reader reader = new InputStreamReader(
-                new ByteArrayInputStream(response.getRawResponseBody().getBytes(StandardCharsets.UTF_8)));
+                new ByteArrayInputStream(response.readEntity(String.class).getBytes(StandardCharsets.UTF_8)));
         JsonObject jsonObject = Json.createReader(reader).readObject();
 
         return new Neo4jClientErrorException(
                 (String)getObjectFromJsonValue(jsonObject.get("message")),
                 (String)getObjectFromJsonValue(jsonObject.get("exception")),
                 (String)getObjectFromJsonValue(jsonObject.get("fullname")),
-                response.getReceivedResponse());
+                response);
     }
 
     private Object getObjectFromJsonValue(JsonValue value){
