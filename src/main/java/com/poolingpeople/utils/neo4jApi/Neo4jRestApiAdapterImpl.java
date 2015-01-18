@@ -1,7 +1,5 @@
 package com.poolingpeople.utils.neo4jApi;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 //import javax.enterprise.context.ApplicationScoped;
 //import javax.inject.Inject;
@@ -16,18 +14,22 @@ import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //@ApplicationScoped
-@Stateless
+//@Stateless
 public class Neo4jRestApiAdapterImpl implements Neo4jRestApiAdapter{
 
     @Inject
     RequestBodyBuilderHelper helper;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-    ResponseParser responseParser = new ResponseParser();
+    Logger logger = Logger.getLogger(this.getClass().getName());
+
+    @Inject
+    ResponseStreamingParser responseParser;
     private static final String cypherEndpoint = "/db/data/transaction";
-    private String host;
+    private String host = "localhost";
     private int port = 7474;
 
     public Neo4jRestApiAdapterImpl(){
@@ -42,11 +44,10 @@ public class Neo4jRestApiAdapterImpl implements Neo4jRestApiAdapter{
 
         if("localhost".equals(host) && System.getenv("neo4j") != null) {
             host = System.getenv("neo4j");
-            logger.info("envelope found. Using " + host + ":" + port);
+            logger.log(Level.FINER, "envelope found. Using " + host + ":" + port);
         }else{
-            logger.info("envelope NOT found. Using " + host + ":" + port);
+            logger.log(Level.FINER, "envelope NOT found. Using " + host + ":" + port);
         }
-
     }
 
     private URI getCypherEndPointUri(){
@@ -59,7 +60,7 @@ public class Neo4jRestApiAdapterImpl implements Neo4jRestApiAdapter{
 
     @Override
     public List<Map<String, Object>> runParametrizedCypherQuery(String query, Map<String, Object> params) {
-        this.logger.debug("Neo4J request with cypher query: " + query);
+        this.logger.log(Level.FINE, "Neo4J request with cypher query: " + query);
 
         Client client = ClientBuilder.newClient();
         Response response = client.target(getCypherEndPointUri())
@@ -79,7 +80,7 @@ public class Neo4jRestApiAdapterImpl implements Neo4jRestApiAdapter{
     @Override
     public Collection<Map<String, Map<String, Object>>> runCypherQuery(String query, Map<String, Object> params) {
 
-        this.logger.debug("Neo4J request with cypher query: " + query);
+        this.logger.log(Level.FINE, "Neo4J request with cypher query: " + query);
 
         Client client = ClientBuilder.newClient();
         Response response = client.target(getCypherEndPointUri())

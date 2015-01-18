@@ -7,6 +7,10 @@ import javax.json.stream.JsonParser;
  */
 public interface State {
 
+    public static enum NAMES{
+        MAIN_STATE, READ_COLUM_NAMES, READ_COLUM_VALUES, READ_DATA, READ_ERROR
+    }
+
     /**
      * Proces the next event and add the resultMixed in the resultMixed object.
      * Collection are the different returned rows.

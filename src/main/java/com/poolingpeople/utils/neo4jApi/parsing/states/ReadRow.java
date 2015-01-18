@@ -3,12 +3,15 @@ package com.poolingpeople.utils.neo4jApi.parsing.states;
 import com.poolingpeople.utils.neo4jApi.parsing.ResultContainer;
 import com.poolingpeople.utils.neo4jApi.parsing.State;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.json.stream.JsonParser;
 
 /**
  * Created by alacambra on 1/17/15.
  */
+@ApplicationScoped
 public class ReadRow implements State {
 
    @Inject
