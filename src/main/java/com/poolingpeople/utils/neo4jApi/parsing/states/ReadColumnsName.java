@@ -1,6 +1,6 @@
 package com.poolingpeople.utils.neo4jApi.parsing.states;
 
-import com.poolingpeople.utils.neo4jApi.parsing.ResultContainerMixed;
+import com.poolingpeople.utils.neo4jApi.parsing.ResultContainer;
 import com.poolingpeople.utils.neo4jApi.parsing.State;
 
 import javax.inject.Inject;
@@ -15,7 +15,7 @@ public class ReadColumnsName implements State {
     ReadStatementResult readStatementResult = new ReadStatementResult();
 
     @Override
-    public State process(JsonParser parser,ResultContainerMixed result) {
+    public State process(JsonParser parser,ResultContainer result) {
         JsonParser.Event event = parser.next();
 
         if(event == JsonParser.Event.VALUE_STRING){

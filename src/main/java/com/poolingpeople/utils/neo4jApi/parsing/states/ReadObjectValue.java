@@ -1,7 +1,7 @@
 package com.poolingpeople.utils.neo4jApi.parsing.states;
 
 import com.poolingpeople.utils.neo4jApi.parsing.JsonValueReader;
-import com.poolingpeople.utils.neo4jApi.parsing.ResultContainerMixed;
+import com.poolingpeople.utils.neo4jApi.parsing.ResultContainer;
 import com.poolingpeople.utils.neo4jApi.parsing.State;
 
 import javax.inject.Inject;
@@ -19,7 +19,7 @@ public class ReadObjectValue implements State {
     JsonValueReader helper;
 
     @Override
-    public State process(JsonParser parser, ResultContainerMixed resultContainer) {
+    public State process(JsonParser parser, ResultContainer resultContainer) {
 
         JsonParser.Event event = parser.next();
 

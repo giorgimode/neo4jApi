@@ -1,6 +1,6 @@
 package com.poolingpeople.utils.neo4jApi.parsing.states;
 
-import com.poolingpeople.utils.neo4jApi.parsing.ResultContainerMixed;
+import com.poolingpeople.utils.neo4jApi.parsing.ResultContainer;
 import com.poolingpeople.utils.neo4jApi.parsing.State;
 
 import javax.inject.Inject;
@@ -18,7 +18,7 @@ public class ReadData implements State {
     ReadStatementResult readStatementResult;
 
     @Override
-    public State process(JsonParser parser, ResultContainerMixed result) {
+    public State process(JsonParser parser, ResultContainer result) {
 
         JsonParser.Event event = parser.next();
 
