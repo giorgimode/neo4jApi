@@ -1,31 +1,31 @@
-package com.poolingpeople.utils.neo4jApi.parsing;
+package com.poolingpeople.utils.neo4jApi.parsing.states;
+
+import com.poolingpeople.utils.neo4jApi.parsing.JsonValueReader;
+import com.poolingpeople.utils.neo4jApi.parsing.ResultContainerMixed;
+import com.poolingpeople.utils.neo4jApi.parsing.State;
 
 import javax.inject.Inject;
-import javax.json.JsonValue;
 import javax.json.stream.JsonParser;
 
 /**
  * Created by alacambra on 1/17/15.
  */
-public class ReadObjectValue implements State{
+public class ReadObjectValue implements State {
 
     @Inject
-    ReadRow readRow;
+    ReadColumnValue readValue;
 
     @Inject
     JsonValueReader helper;
 
     @Override
-    public State process(JsonParser parser, ResultContainer resultContainer) {
+    public State process(JsonParser parser, ResultContainerMixed resultContainer) {
 
         JsonParser.Event event = parser.next();
 
         if(event == JsonParser.Event.END_OBJECT){
-            return readRow;
-        }
-
-        if(event == JsonParser.Event.START_OBJECT){
-            return this;
+            resultContainer.columnValueRead();
+            return readValue;
         }
 
         if(event == JsonParser.Event.KEY_NAME){
@@ -35,6 +35,6 @@ public class ReadObjectValue implements State{
             return this;
         }
 
-        throw new RuntimeException("unsupported event");
+        throw new RuntimeException("unsupported event " + event);
     }
 }

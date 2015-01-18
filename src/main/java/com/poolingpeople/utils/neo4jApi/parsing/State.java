@@ -1,8 +1,6 @@
 package com.poolingpeople.utils.neo4jApi.parsing;
 
 import javax.json.stream.JsonParser;
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * Created by alacambra on 1/17/15.
@@ -19,7 +17,7 @@ public interface State {
      * @param resultContainer
      * @return
      */
-    public State process(JsonParser parser ,ResultContainer resultContainer);
+    public State process(JsonParser parser ,ResultContainerMixed resultContainer);
 
 
 

@@ -47,7 +47,7 @@ public class JsonValueReader {
             return null;
         }
 
-        throw new RuntimeException("Type for " + event.name() + " not found.");
+        throw new InvalidJsonValueException("Type for " + event.name() + " not found.");
 
     }
 }

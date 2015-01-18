@@ -1,7 +1,7 @@
 package com.poolingpeople.utils.neo4jApi;
 
-import com.poolingpeople.testUtils.EmbeddedTestServer;
-import com.poolingpeople.testUtils.LocalNeo4jRestServer;
+//import com.poolingpeople.testUtils.EmbeddedTestServer;
+//import com.poolingpeople.testUtils.LocalNeo4jRestServer;
 import org.apache.commons.io.IOUtils;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+//import static org.junit.Assert.assertEquals;
+//import static org.mockito.Mockito.mock;
+//import static org.mockito.Mockito.when;
 //import org.neo4j.shell;
 
 //@RunWith(JUnit4.class)
