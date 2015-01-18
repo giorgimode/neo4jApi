@@ -1,5 +1,9 @@
 package com.poolingpeople.utils.neo4jApi;
 
+import com.poolingpeople.utils.neo4jApi.parsing.ResultContainer;
+import com.poolingpeople.utils.neo4jApi.parsing.StatesManager;
+
+import javax.inject.Inject;
 import javax.json.*;
 import javax.json.stream.JsonParser;
 import javax.ws.rs.core.Response;
@@ -15,68 +19,29 @@ import java.util.*;
  */
 public class ResponseStreamingParser {
 
+    @Inject
+    StatesManager statesManager;
+
     public List<Map<String,Object>> parseList(String json) {
         return parseList(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)));
     }
 
-    /**
-     * {
-     *   "results" : [ {
-     *          "columns" : [ "id(n)" ],
-     *          "data" : [ {
-     *              "row" : [ 3 ]
-     *          } ]
-     *      } ],
-     *    "errors" : [ ]
-     *  }
-     * @param inputStream
-     * @return
-     */
     public List<Map<String,Object>> parseList(InputStream inputStream) {
 
-        JsonParser parser = Json.createParser(inputStream);
+        Collection<Map<String, Map<String, Object>>> r = statesManager.parse(inputStream).getResultMixed();
+        List<Map<String,Object>> result = new ArrayList<>();
 
-        ParsingState state = null;
-
-        while (parser.hasNext()) {
-            JsonParser.Event event = parser.next();
-            switch (event) {
-                case START_OBJECT:
-                    if(state == null){
-                        state = ParsingState.BEGIN;
-                    }
-                    break;
-
-                case END_OBJECT:
-
-                    break;
-
-                case START_ARRAY:
-                    if(state == ParsingState.BEGIN){
-                        state = ParsingState.READING_COLUMNS;
-                    }
-                    break;
-
-                case END_ARRAY:
-                    break;
-
-                case KEY_NAME:
-                    break;
-
-                case VALUE_STRING:
-
+        for(Map<String, Map<String, Object>> row : r){
+            Map<String, Object> newRow = new HashMap<>();
+            for( Map<String, Object> values : row.values()){
+                for(Map.Entry<String, Object> value: values.entrySet()){
+                    newRow.put(value.getKey(), value.getValue());
+                }
             }
+            result.add(newRow);
         }
 
-    return null;
-    }
-
-    private void addColumnName(String name){
-
-    }
-
-    private enum ParsingState{
-        BEGIN, READING_COLUMNS, READING_DATA, READING_ROW, ERRORS
+        return result;
     }
 
     public List<Map<String, Object>> parseSimpleListOrException(Response response){
@@ -108,64 +73,11 @@ public class ResponseStreamingParser {
     }
 
     public Collection<Map<String,Map<String,Object>>> parse(String json) {
-
-        return parse(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)));
-
-    }
-
-    public List<Map<String, Object>> parseSchema(){
-        return null;
+        return statesManager.parse(json).getResultMixed();
     }
 
     public Collection<Map<String,Map<String,Object>>> parse(InputStream inputStream){
-
-        Reader reader = new InputStreamReader(inputStream);
-        JsonReader jsonReader = Json.createReader(reader);
-        JsonObject jsonObject = jsonReader.readObject();
-
-        JsonArray columnNames = (JsonArray) jsonObject.get("columns");
-        JsonArray rows = (JsonArray) jsonObject.get("data");
-
-        Collection<Map<String,Map<String,Object>>> result = new HashSet<>();
-
-        for(JsonValue rowValue : rows){
-            result.add(getRow(columnNames, (JsonArray) rowValue));
-        }
-
-        return result;
-    }
-
-    private Map<String,Map<String,Object>> getRow(JsonArray columnNames, JsonArray row){
-
-        Map<String,Map<String,Object>> rowResult = new HashMap<>();
-
-        for(int i = 0; i < columnNames.size(); i++){
-            Map.Entry<String,Map<String,Object>> column =
-                    getColumn(((JsonString) columnNames.get(i)).getString(), row.get(i));
-
-            rowResult.put(column.getKey(), column.getValue());
-        }
-
-        return rowResult;
-    }
-
-    private Map.Entry<String,Map<String,Object>> getColumn(String columnName, JsonValue columnValue){
-
-        Map<String, Object> v = new HashMap<>();
-        if (columnValue.getValueType() == JsonValue.ValueType.OBJECT) {
-            for (Map.Entry<String, JsonValue> jsonValue :
-                    ((JsonObject) ((JsonObject) columnValue).get("data")).entrySet()) {
-
-                Object o =  getObjectFromJsonValue(jsonValue.getValue());
-                v.put(jsonValue.getKey(), o);
-            }
-        } else if (columnValue.getValueType() != JsonValue.ValueType.ARRAY) {
-
-            v.put(columnName, getObjectFromJsonValue(columnValue));
-        }
-
-        Map.Entry<String, Map<String,Object>> entry = new AbstractMap.SimpleEntry<>(columnName, v);
-        return entry;
+        return statesManager.parse(inputStream).getResultMixed();
     }
 
     private Neo4jClientErrorException parseException(Response response){

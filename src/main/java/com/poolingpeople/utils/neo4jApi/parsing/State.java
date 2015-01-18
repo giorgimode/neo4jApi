@@ -8,7 +8,7 @@ import javax.json.stream.JsonParser;
 public interface State {
 
     /**
-     * Proces the next event and add the result in the result object.
+     * Proces the next event and add the resultMixed in the resultMixed object.
      * Collection are the different returned rows.
      * Map<String, Map<String, Object>> gives the column name with its values
      * Map<String, Object> is the value of a column. It can be a json object or just a value.
@@ -17,7 +17,7 @@ public interface State {
      * @param resultContainer
      * @return
      */
-    public State process(JsonParser parser ,ResultContainerMixed resultContainer);
+    public State process(JsonParser parser ,ResultContainer resultContainer);
 
 
 

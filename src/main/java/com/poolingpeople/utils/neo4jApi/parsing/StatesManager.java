@@ -20,11 +20,11 @@ public class StatesManager {
 
     Logger logger = Logger.getLogger(this.getClass().getName());
 
-    public ResultContainerMixed parse(InputStream inputStream){
+    public ResultContainer parse(InputStream inputStream){
 
         JsonParser parser = Json.createParser(inputStream);
         State currentState = mainState;
-        ResultContainerMixed resultContainer = new ResultContainerMixed();
+        ResultContainer resultContainer = new ResultContainerMixed();
 
         while (currentState != null) {
             logger.finer("on state " + currentState.getClass().getSimpleName());

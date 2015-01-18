@@ -23,9 +23,9 @@ public class StatesManagerTest {
         InputStream stream = this.getClass().getClassLoader().getResourceAsStream("TransactionalResponse.json");
 
         StatesManager statesManager = new Weld().initialize().instance().select(StatesManager.class).get();
-        ResultContainerMixed resultContainer = statesManager.parse(stream);
+        ResultContainer resultContainer = statesManager.parse(stream);
 
-        Collection<Map<String, Map<String, Object>>> result = resultContainer.getResult();
+        Collection<Map<String, Map<String, Object>>> result = resultContainer.getResultMixed();
 
         assertEquals(5, result.size());
 
