@@ -22,12 +22,13 @@ import java.util.logging.Logger;
 public class Neo4jRestApiAdapterImpl implements Neo4jRestApiAdapter{
 
     @Inject
-    RequestBodyBuilderHelper helper;
+    RequestBodyBuilderHelper helper = new RequestBodyBuilderHelper();
 
     Logger logger = Logger.getLogger(this.getClass().getName());
 
     @Inject
-    ResponseStreamingParser responseParser;
+    ResponseStreamingParser responseParser = new ResponseStreamingParser();
+
     private static final String cypherEndpoint = "/db/data/transaction";
     private String host = "localhost";
     private int port = 7474;
