@@ -21,18 +21,23 @@ public class ReadErrors implements State{
     MainState mainState = new MainState();
 
     @Override
-    public State process(JsonParser parser, ResultContainer resultContainer) {
+    public NAMES process(JsonParser parser, ResultContainer resultContainer) {
 
         JsonParser.Event event = parser.next();
 
         if(event == JsonParser.Event.START_ARRAY){
-             return readError;
+             return readError.getName();
         }
 
         if(event == JsonParser.Event.END_ARRAY){
-            return mainState;
+            return mainState.getName();
         }
 
         throw new RuntimeException("Unexpceted event " + event);
+    }
+
+    @Override
+    public NAMES getName() {
+        return NAMES.READ_ERRORS;
     }
 }

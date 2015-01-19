@@ -18,18 +18,23 @@ public class MainState implements State {
     ReadStatementResult readStatementResult;
 
     @Override
-    public State process(JsonParser parser, ResultContainer resultContainer) {
+    public NAMES process(JsonParser parser, ResultContainer resultContainer) {
 
         JsonParser.Event event = parser.next();
 
         if(event == JsonParser.Event.KEY_NAME && parser.getString().equals("results")){
-            return readStatementResult;
+            return readStatementResult.getName();
         }
 
         if(event == JsonParser.Event.END_OBJECT){
-            return null;
+            return NAMES.NONE;
         }
 
-        return this;
+        return this.getName();
+    }
+
+    @Override
+    public NAMES getName() {
+        return NAMES.MAIN_STATE;
     }
 }

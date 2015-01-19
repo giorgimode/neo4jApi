@@ -21,18 +21,23 @@ public class ReadData implements State {
     ReadStatementResult readStatementResult;
 
     @Override
-    public State process(JsonParser parser, ResultContainer result) {
+    public NAMES process(JsonParser parser, ResultContainer result) {
 
         JsonParser.Event event = parser.next();
 
         if(event == JsonParser.Event.KEY_NAME && parser.getString().equals("row")){
-            return readRow;
+            return readRow.getName();
         }
 
         if(event == JsonParser.Event.END_ARRAY){
-            return readStatementResult;
+            return readStatementResult.getName();
         }
 
-        return this;
+        return this.getName();
+    }
+
+    @Override
+    public NAMES getName() {
+        return NAMES.READ_DATA;
     }
 }

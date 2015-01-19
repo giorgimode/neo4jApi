@@ -1,7 +1,7 @@
 package com.poolingpeople.utils.neo4jApi;
 
 import com.poolingpeople.utils.neo4jApi.parsing.ResultContainer;
-import com.poolingpeople.utils.neo4jApi.parsing.StatesManager;
+import com.poolingpeople.utils.neo4jApi.parsing.states.StatesManager;
 
 import javax.inject.Inject;
 import javax.json.*;
@@ -20,7 +20,7 @@ import java.util.*;
 public class ResponseStreamingParser {
 
     @Inject
-    StatesManager statesManager;
+    StatesManager statesManager = new StatesManager();
 
     public List<Map<String,Object>> parseList(String json) {
         return parseList(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)));

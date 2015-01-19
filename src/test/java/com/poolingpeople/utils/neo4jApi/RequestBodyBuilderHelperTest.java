@@ -33,19 +33,19 @@ public class RequestBodyBuilderHelperTest {
         assertEquals(expected, cud.getCypherBody(query, params).toString());
     }
 
-    @Test
-    public void ex(){
+//    @Test
+//    public void ex(){
+//
+//        Client client = ClientBuilder.newClient();
+//        String query = "MATCH n RETURN n, n.uuid, n.familyName, n as p, n.email LIMIT 5";
+//        Response response = client.target("http://localhost:7474/db/data/transaction/commit")
+//                .request()
+//                .header("Accept", "application/json; charset=UTF-8")
+//                .header("Content-Type","application/json")
+//                .post(Entity.json(cud.getCypherBody(query, null).toString()));
+//
+//        System.out.println(response.readEntity(String.class));
 
-        Client client = ClientBuilder.newClient();
-        String query = "MATCH n RETURN n, n.uuid, n.familyName, n as p, n.email LIMIT 5";
-        Response response = client.target("http://localhost:7474/db/data/transaction/commit")
-                .request()
-                .header("Accept", "application/json; charset=UTF-8")
-                .header("Content-Type","application/json")
-                .post(Entity.json(cud.getCypherBody(query, null).toString()));
 
-        System.out.println(response.readEntity(String.class));
-
-
-    }
+//    }
 }
