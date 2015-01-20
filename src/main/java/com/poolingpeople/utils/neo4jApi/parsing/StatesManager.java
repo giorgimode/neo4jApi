@@ -37,7 +37,4 @@ public class StatesManager {
     public ResultContainer parse(String json) {
         return parse(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)));
     }
-
-
-
 }
