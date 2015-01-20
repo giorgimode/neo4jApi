@@ -4,7 +4,6 @@ import com.poolingpeople.utils.neo4jApi.parsing.ResultContainer;
 import com.poolingpeople.utils.neo4jApi.parsing.State;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.json.stream.JsonParser;
 
@@ -18,19 +17,24 @@ public class ReadColumnsName implements State {
     ReadStatementResult readStatementResult = new ReadStatementResult();
 
     @Override
-    public State process(JsonParser parser,ResultContainer result) {
+    public NAMES process(JsonParser parser,ResultContainer result) {
         JsonParser.Event event = parser.next();
 
         if(event == JsonParser.Event.VALUE_STRING){
 
             result.addColumnName(parser.getString());
-            return this;
+            return this.getName();
 
         }
         if(event == JsonParser.Event.END_ARRAY){
-            return readStatementResult;
+            return readStatementResult.getName();
         }
 
-        return this;
+        return this.getName();
+    }
+
+    @Override
+    public NAMES getName() {
+        return NAMES.READ_COLUM_NAME;
     }
 }

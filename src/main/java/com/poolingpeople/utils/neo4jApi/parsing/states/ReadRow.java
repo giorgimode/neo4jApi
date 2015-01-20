@@ -22,18 +22,23 @@ public class ReadRow implements State {
 
 
     @Override
-    public State process(JsonParser parser, ResultContainer resultContainer) {
+    public NAMES process(JsonParser parser, ResultContainer resultContainer) {
         JsonParser.Event event = parser.next();
 
         if (event == JsonParser.Event.START_ARRAY) {
             resultContainer.startNewRow();
-            return readColumnValue;
+            return readColumnValue.getName();
         }
 
         if (event == JsonParser.Event.END_ARRAY || event == JsonParser.Event.END_OBJECT) {
-            return readData;
+            return readData.getName();
         }
 
         throw new RuntimeException("unsupported event " + event);
+    }
+
+    @Override
+    public NAMES getName() {
+        return NAMES.READ_ROW;
     }
 }

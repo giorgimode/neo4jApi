@@ -8,7 +8,16 @@ import javax.json.stream.JsonParser;
 public interface State {
 
     public static enum NAMES{
-        MAIN_STATE, READ_COLUM_NAMES, READ_COLUM_VALUES, READ_DATA, READ_ERROR
+        MAIN_STATE,
+        READ_COLUM_NAME,
+        READ_COLUM_VALUE,
+        READ_DATA,
+        READ_ERROR,
+        READ_ERRORS,
+        READ_OBJECT_VALUE,
+        READ_ROW,
+        READ_STATEMENT_RESULT,
+        NONE
     }
 
     /**
@@ -21,7 +30,8 @@ public interface State {
      * @param resultContainer
      * @return
      */
-    public State process(JsonParser parser ,ResultContainer resultContainer);
+    public NAMES process(JsonParser parser ,ResultContainer resultContainer);
+    public NAMES getName();
 
 
 

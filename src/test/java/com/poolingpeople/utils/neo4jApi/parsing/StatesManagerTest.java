@@ -1,5 +1,6 @@
 package com.poolingpeople.utils.neo4jApi.parsing;
 
+import com.poolingpeople.utils.neo4jApi.parsing.states.StatesManager;
 import org.jboss.weld.environment.se.Weld;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +36,6 @@ public class StatesManagerTest {
             assertTrue(row.containsKey("n.familyName"));
             assertTrue(row.containsKey("p"));
             assertTrue(row.containsKey("n.email"));
-            System.out.println(row);
 
         }
 

@@ -24,19 +24,24 @@ public class ReadStatementResult implements State {
     MainState mainState;
 
     @Override
-    public State process(JsonParser parser, ResultContainer resultContainer) {
+    public NAMES process(JsonParser parser, ResultContainer resultContainer) {
         JsonParser.Event event = parser.next();
 
         if(event == JsonParser.Event.KEY_NAME){
             if(parser.getString().equals("columns")){
-                return readColumnName;
+                return readColumnName.getName();
             } else if(parser.getString().equals("data")){
-                return readData;
+                return readData.getName();
             }
         } else if(event == JsonParser.Event.END_ARRAY){
-            return mainState;
+            return mainState.getName();
         }
 
-        return this;
+        return this.getName();
+    }
+
+    @Override
+    public NAMES getName() {
+        return NAMES.READ_STATEMENT_RESULT;
     }
 }
