@@ -24,6 +24,8 @@ public class Neo4jRestApiAdapterImpl implements Neo4jRestApiAdapter{
     @Inject
     RequestBodyBuilderHelper helper = new RequestBodyBuilderHelper();
 
+    Client client = ClientBuilder.newClient();
+
     Logger logger = Logger.getLogger(this.getClass().getName());
 
     @Inject
@@ -63,12 +65,14 @@ public class Neo4jRestApiAdapterImpl implements Neo4jRestApiAdapter{
     public List<Map<String, Object>> runParametrizedCypherQuery(String query, Map<String, Object> params) {
         this.logger.log(Level.FINE, "Neo4J request with cypher query: " + query);
 
-        Client client = ClientBuilder.newClient();
+//        Client client = ClientBuilder.newClient();
         Response response = client.target(getCypherEndPointUri())
                 .request()
                 .header("Accept", "application/json; charset=UTF-8")
                 .header("Content-Type","application/json")
                 .post(Entity.json(helper.getCypherBody(query,params)));
+
+        System.out.println(helper.getCypherBody(query,params));
 
         return responseParser.parseSimpleListOrException(response);
     }
