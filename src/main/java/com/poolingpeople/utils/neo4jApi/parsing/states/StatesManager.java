@@ -42,6 +42,7 @@ public class StatesManager {
 
 
         mainState.readStatementResult = readStatementResult;
+        mainState.readErrors = readErrors;
 
         readColumnsName.readStatementResult = readStatementResult;
 

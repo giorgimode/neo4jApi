@@ -22,14 +22,21 @@ public class ReadError implements State{
 
         JsonParser.Event event = parser.next();
 
+        if(event == JsonParser.Event.START_OBJECT){
+            resultContainer.startError();
+            return getName();
+        }
+
         if(event == JsonParser.Event.END_OBJECT){
             return readErrors.getName();
         }
 
         if(event == JsonParser.Event.KEY_NAME){
+            String key = parser.getString();
+            parser.next();
+            resultContainer.getError().addParam(key, parser.getString());
             return this.getName();
         }
-
 
         throw new RuntimeException("Unexpected event " + event);
     }

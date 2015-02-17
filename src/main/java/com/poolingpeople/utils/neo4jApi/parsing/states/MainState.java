@@ -17,6 +17,9 @@ public class MainState implements State {
     @Inject
     ReadStatementResult readStatementResult;
 
+    @Inject
+    ReadErrors readErrors;
+
     @Override
     public NAMES process(JsonParser parser, ResultContainer resultContainer) {
 
@@ -24,6 +27,10 @@ public class MainState implements State {
 
         if(event == JsonParser.Event.KEY_NAME && parser.getString().equals("results")){
             return readStatementResult.getName();
+        }
+
+        if(event == JsonParser.Event.KEY_NAME && parser.getString().equals("errors")){
+            return readErrors.getName();
         }
 
         if(event == JsonParser.Event.END_OBJECT){

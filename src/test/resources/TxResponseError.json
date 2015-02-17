@@ -1,0 +1,10 @@
+{
+    "results":[],
+    "errors":
+    [
+        {
+        "code":"Neo.ClientError.Statement.InvalidSyntax",
+        "message":"Invalid input ' ': expected 'm/M' or 't/T' (line 1, column 11)\n\"match n re turn n limit 10\"\n           ^"
+        }
+    ]
+}

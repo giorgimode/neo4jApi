@@ -14,6 +14,8 @@ public class ResultContainer {
     Integer currentColumnIndex;
     Map<String,Map<String,Object>> currentRow;
     Map<String,Object> currentColumnValue;
+    Error error;
+
 
     public void addColumnName(String columnName){
         columns.add(columnName);
@@ -51,6 +53,44 @@ public class ResultContainer {
 
     public void columnValueRead(){
         currentColumnIndex++;
+    }
+
+    public Error startError(){
+        error = new Error();
+        return error;
+    }
+
+    public Error getError() {
+        return error;
+    }
+
+    public class Error{
+        String code = "";
+        String message = "";
+
+        public void addParam(String key, String value){
+
+            if(key.equals("code")) code = value;
+
+            else if(key.equals("message")) message = value;
+
+            else{
+                throw new RuntimeException("key " + key + " not valid");
+            }
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        @Override
+        public String toString() {
+            return code + ":" + message;
+        }
     }
 
 }

@@ -54,23 +54,10 @@ public class Neo4jRestApiAdapterImpl implements Neo4jRestApiAdapter{
 
     @Override
     public boolean schemaIsCorrectlyLoaded() {
-//        List<Map<String, Object>> constraints = this.getConstraints();
-
-        /*
-          TODO: this is only temporarily for convenience and should be removed in production!
-          We could define a map with constraints that have to be present. If one is missing we can set it.
-          */
-//        if (constraints.isEmpty()) {
-//            this.logger.warn("DB schema is invalid! Setting UUID constraint!");
-//            this.createConstraint("UUID", "uuid");
-//        }
-
         return true;
     }
 
     public List<Map<String, Object>> getConstraints() {
-//        SchemaResponse response = (SchemaResponse) neo4jClient.get(new SchemaRequest("constraint"));
-//        return response.getReceivedDataAsMap();
         return new ArrayList<>();
     }
 
