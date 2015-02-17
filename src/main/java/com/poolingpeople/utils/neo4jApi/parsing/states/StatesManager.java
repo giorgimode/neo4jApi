@@ -2,7 +2,6 @@ package com.poolingpeople.utils.neo4jApi.parsing.states;
 
 import com.poolingpeople.utils.neo4jApi.parsing.JsonValueReader;
 import com.poolingpeople.utils.neo4jApi.parsing.ResultContainer;
-import com.poolingpeople.utils.neo4jApi.parsing.ResultContainerMixed;
 import com.poolingpeople.utils.neo4jApi.parsing.State;
 
 import javax.inject.Inject;
@@ -84,7 +83,7 @@ public class StatesManager {
 
         JsonParser parser = Json.createParser(inputStream);
         State currentState = mainState;
-        ResultContainer resultContainer = new ResultContainerMixed();
+        ResultContainer resultContainer = new ResultContainer();
 
         State.NAMES lastState = null;
 
