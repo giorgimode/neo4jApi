@@ -3,11 +3,6 @@ package com.poolingpeople.utils.neo4jApi;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.swing.*;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
