@@ -16,8 +16,8 @@ import java.util.logging.Logger;
  */
 public class Endpoint {
 
-    String host;
-    int port;
+    String host = "localhost";
+    int port = 7474;
     Logger logger = Logger.getLogger(this.getClass().getName());
     
     public String getEndpoint(){        
