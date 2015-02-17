@@ -1,79 +1,42 @@
 package com.poolingpeople.utils.neo4jApi;
 
 
-//import javax.enterprise.context.ApplicationScoped;
-//import javax.inject.Inject;
-import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//@ApplicationScoped
-//@Stateless
 public class Neo4jRestApiAdapterImpl implements Neo4jRestApiAdapter{
 
     @Inject
-    RequestBodyBuilderHelper helper = new RequestBodyBuilderHelper();
-
-    Client client = ClientBuilder.newClient();
+    RequestBodyBuilderHelper helper;
 
     Logger logger = Logger.getLogger(this.getClass().getName());
 
     @Inject
-    ResponseStreamingParser responseParser = new ResponseStreamingParser();
-
-    private static final String cypherEndpoint = "/db/data/transaction";
-    private String host = "localhost";
-    private int port = 7474;
+    ResponseStreamingParser responseParser;
+    
+    @Inject
+    Endpoint endpoint;
 
     public Neo4jRestApiAdapterImpl(){
-        this("7474");
     }
 
-    public Neo4jRestApiAdapterImpl(String port){
-        this("localhost", port);
-    }
-
-    public Neo4jRestApiAdapterImpl(String host, String port){
-
-        if("localhost".equals(host) && System.getenv("neo4j") != null) {
-            host = System.getenv("neo4j");
-            logger.log(Level.FINER, "envelope found. Using " + host + ":" + port);
-        }else{
-            logger.log(Level.FINER, "envelope NOT found. Using " + host + ":" + port);
-        }
-    }
-
-    private URI getCypherEndPointUri(){
-        try {
-            return new URI("http://" + host + ":" + port + "/" + cypherEndpoint);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+    public Neo4jRestApiAdapterImpl(Endpoint endpoint){
+        this.endpoint = endpoint;
     }
 
     @Override
     public List<Map<String, Object>> runParametrizedCypherQuery(String query, Map<String, Object> params) {
         this.logger.log(Level.FINE, "Neo4J request with cypher query: " + query);
-
-//        Client client = ClientBuilder.newClient();
-        Response response = client.target(getCypherEndPointUri())
-                .request()
-                .header("Accept", "application/json; charset=UTF-8")
-                .header("Content-Type","application/json")
-                .post(Entity.json(helper.getCypherBody(query,params)));
-
-        System.out.println(helper.getCypherBody(query,params));
-
+        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query,params)));
         return responseParser.parseSimpleListOrException(response);
     }
 
@@ -84,16 +47,8 @@ public class Neo4jRestApiAdapterImpl implements Neo4jRestApiAdapter{
 
     @Override
     public Collection<Map<String, Map<String, Object>>> runCypherQuery(String query, Map<String, Object> params) {
-
         this.logger.log(Level.FINE, "Neo4J request with cypher query: " + query);
-
-        Client client = ClientBuilder.newClient();
-        Response response = client.target(getCypherEndPointUri())
-                .request()
-                .header("Accept", "application/json; charset=UTF-8")
-                .header("Content-Type","application/json")
-                .post(Entity.json(helper.getCypherBody(query,params)));
-
+        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query,params)));
         return responseParser.parseOrException(response);
     }
 
@@ -123,43 +78,35 @@ public class Neo4jRestApiAdapterImpl implements Neo4jRestApiAdapter{
         return new ArrayList<>();
     }
 
-
     public void createIndex(String label, String property) {
         String query = "CREATE INDEX ON :" + label + "(" + property + ")";
-        Client client = ClientBuilder.newClient();
-        Response response = client.target(getCypherEndPointUri())
-                .request()
-                .header("Accept", "application/json; charset=UTF-8")
-                .header("Content-Type","application/json")
-                .post(Entity.json(helper.getCypherBody(query, null)));
+        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, null)));
     }
 
     public void dropIndex(String label, String property) {
         String query = "DROP INDEX ON :" + label + "(" + property + ")";
-        Client client = ClientBuilder.newClient();
-        Response response = client.target(getCypherEndPointUri())
-                .request()
-                .header("Accept", "application/json; charset=UTF-8")
-                .header("Content-Type","application/json")
-                .post(Entity.json(helper.getCypherBody(query, null)));
+        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, null)));
     }
 
     public void createConstraint(String label, String property) {
         String query = "CREATE CONSTRAINT ON (a:" + label + ") ASSERT a." + property + " IS UNIQUE";
-        Client client = ClientBuilder.newClient();
-        Response response = client.target(getCypherEndPointUri())
-                .request()
-                .header("Accept", "application/json; charset=UTF-8")
-                .header("Content-Type","application/json")
-                .post(Entity.json(helper.getCypherBody(query, null)));    }
+        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, null)));    }
 
     @Override
     public void dropConstraint(String label, String property) {
         String query = "DROP CONSTRAINT ON (a:" + label + ") ASSERT a." + property + " IS UNIQUE";
+        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, null)));
+    }
+
+    private javax.ws.rs.client.Invocation.Builder getCypherBuilder(){
         Client client = ClientBuilder.newClient();
-        Response response = client.target(getCypherEndPointUri())
+        return client.target(endpoint.getCypherEndpoint())
                 .request()
                 .header("Accept", "application/json; charset=UTF-8")
-                .header("Content-Type","application/json")
-                .post(Entity.json(helper.getCypherBody(query, null)));        }
+                .header("Content-Type","application/json");
+    }
+
+    public void setEndpoint(Endpoint endpoint) {
+        this.endpoint = endpoint;
+    }
 }

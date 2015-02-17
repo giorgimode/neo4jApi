@@ -1,26 +1,57 @@
 package com.poolingpeople.utils.neo4jApi.parsing;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * Created by alacambra on 1/18/15.
+ * Created by alacambra on 1/17/15.
  */
-public interface ResultContainer {
-    void addColumnName(String columnName);
+public class ResultContainer {
+    List<String> columns = new ArrayList<>();
 
-    Collection<Map<String, Map<String, Object>>> getResultMixed();
+    //all-rows/column-name/column-key-value
+    Collection<Map<String,Map<String,Object>>> resultMixed = new HashSet<>();
 
-    Map<String,Map<String,Object>> startNewRow();
+    Integer currentColumnIndex;
+    Map<String,Map<String,Object>> currentRow;
+    Map<String,Object> currentColumnValue;
 
-    Map<String,Object> startNewColumn();
+    public void addColumnName(String columnName){
+        columns.add(columnName);
+    }
 
-    void addColumnValue(String key, Object value);
+    public Collection<Map<String, Map<String, Object>>> getResultMixed() {
+        return resultMixed;
+    }
 
-    void addColumnValue(Object value);
 
-    void columnValueRead();
+    public List<Map<String, Object>> getResultParametrized() {
+        throw new RuntimeException("Parametrized result not supported. Use Mixed result");
+    }
 
-    public List<Map<String, Object>> getResultParametrized();
+    public Map<String,Map<String,Object>> startNewRow(){
+        currentRow = new HashMap<>();
+        resultMixed.add(currentRow);
+        currentColumnIndex = 0;
+        return currentRow;
+    }
+
+    public Map<String,Object> startNewColumn(){
+        currentColumnValue = new HashMap<>();
+        currentRow.put(columns.get(currentColumnIndex), currentColumnValue);
+        return currentColumnValue;
+    }
+
+    public void addColumnValue(String key, Object value){
+        currentColumnValue.put(key, value);
+    }
+
+    public void addColumnValue(Object value){
+        currentColumnValue.put(columns.get(currentColumnIndex), value);
+    }
+
+    public void columnValueRead(){
+        currentColumnIndex++;
+    }
+
 }
+
