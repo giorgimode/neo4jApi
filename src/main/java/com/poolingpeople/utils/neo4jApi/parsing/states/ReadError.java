@@ -22,11 +22,6 @@ public class ReadError implements State{
 
         JsonParser.Event event = parser.next();
 
-        if(event == JsonParser.Event.START_OBJECT){
-            resultContainer.startError();
-            return getName();
-        }
-
         if(event == JsonParser.Event.END_OBJECT){
             return readErrors.getName();
         }

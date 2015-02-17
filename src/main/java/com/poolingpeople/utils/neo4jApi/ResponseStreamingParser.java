@@ -81,16 +81,8 @@ public class ResponseStreamingParser {
     }
 
     private Neo4jClientErrorException parseException(Response response){
-
-        Reader reader = new InputStreamReader(
-                new ByteArrayInputStream(response.readEntity(String.class).getBytes(StandardCharsets.UTF_8)));
-        JsonObject jsonObject = Json.createReader(reader).readObject();
-
-        return new Neo4jClientErrorException(
-                (String)getObjectFromJsonValue(jsonObject.get("message")),
-                (String)getObjectFromJsonValue(jsonObject.get("exception")),
-                (String)getObjectFromJsonValue(jsonObject.get("fullname")),
-                response);
+        ResultContainer.Error error = statesManager.parse(response.readEntity(InputStream.class)).getError();
+        return new Neo4jClientErrorException(error.getMessage(), error.getCode(), error.getCode(), response);
     }
 
     private Object getObjectFromJsonValue(JsonValue value){

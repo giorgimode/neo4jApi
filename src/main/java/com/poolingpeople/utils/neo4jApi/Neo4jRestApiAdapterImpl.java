@@ -35,7 +35,7 @@ public class Neo4jRestApiAdapterImpl implements Neo4jRestApiAdapter{
 
     @Override
     public List<Map<String, Object>> runParametrizedCypherQuery(String query, Map<String, Object> params) {
-        this.logger.log(Level.FINE, "Neo4J request with cypher query: " + query);
+        this.logger.log(Level.FINE, "Neo4j request with cypher query: " + query);
         Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query,params)));
         return responseParser.parseSimpleListOrException(response);
     }
