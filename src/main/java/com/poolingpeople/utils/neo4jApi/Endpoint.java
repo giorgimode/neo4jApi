@@ -40,7 +40,7 @@ public class Endpoint {
 
     public URI getCypherEndpoint(){
         try {
-            return new URI("http://" + host + ":" + port + "/db/data/transaction");
+            return new URI("http://" + host + ":" + port + "/db/data/transaction/commit");
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
