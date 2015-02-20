@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class StatesManagerTest {
+public class StatesManagerUT {
 
     @Before
     public void setUp() throws Exception {

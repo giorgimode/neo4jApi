@@ -73,7 +73,14 @@ public class ResponseStreamingParser {
     }
 
     public Collection<Map<String,Map<String,Object>>> parse(String json) {
-        return statesManager.parse(json).getResultMixed();
+
+        ResultContainer resultContainer = statesManager.parse(json);
+
+        if(statesManager.parse(json).getError() != null){
+            throw parseException(resultContainer);
+        } else {
+            return resultContainer.getResultMixed();
+        }
     }
 
     public Collection<Map<String,Map<String,Object>>> parse(InputStream inputStream){
@@ -82,7 +89,12 @@ public class ResponseStreamingParser {
 
     private Neo4jClientErrorException parseException(Response response){
         ResultContainer.Error error = statesManager.parse(response.readEntity(InputStream.class)).getError();
-        return new Neo4jClientErrorException(error.getMessage(), error.getCode(), error.getCode(), response);
+        return new Neo4jClientErrorException(error.getMessage(), error.getCode(), error.getCode());
+    }
+
+    private Neo4jClientErrorException parseException(ResultContainer resultContainer){
+        ResultContainer.Error error = resultContainer.getError();
+        return new Neo4jClientErrorException(error.getMessage(), error.getCode(), error.getCode());
     }
 
     private Object getObjectFromJsonValue(JsonValue value){

@@ -10,7 +10,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.*;
 
-public class CypherQueryPropertiesTest {
+public class CypherQueryPropertiesUT {
 
     CypherQueryProperties cut;
 
