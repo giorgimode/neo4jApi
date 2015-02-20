@@ -13,7 +13,7 @@ public class Neo4jRestApiAdapterImplTest {
     @Before
     public void setUp() throws Exception {
         neo4jRestApiAdapter = new Weld().initialize().instance().select(Neo4jRestApiAdapterImpl.class).get();
-        neo4jRestApiAdapter.runCypherQuery(createEvent(), null);
+        neo4jRestApiAdapter.runParametrizedCypherQuery(createEvent());
     }
 
     private String createEvent(){
@@ -24,7 +24,7 @@ public class Neo4jRestApiAdapterImplTest {
 
     @Test
     public void testCreateQuery(){
-        neo4jRestApiAdapter.runCypherQuery(createEvent(), null);
+        neo4jRestApiAdapter.runParametrizedCypherQuery(createEvent());
     }
 
     @Test

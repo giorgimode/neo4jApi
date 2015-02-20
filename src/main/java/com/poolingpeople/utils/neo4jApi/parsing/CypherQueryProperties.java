@@ -7,27 +7,25 @@ import java.util.Map;
  * Created by alacambra on 19.02.15.
  */
 public class CypherQueryProperties {
-    Map<String, Map<String, Object>> properties;
+    Map<String, Map<String, Object>> properties = new HashMap<>();
 
-    public class Subproperies{
+    public class Subproperties {
 
         String id;
 
-        public Subproperies(String id) {
+        public Subproperties(String id) {
             this.id = id;
         }
 
         Map<String, Object> props = new HashMap<>();
 
-        public Subproperies add(String key, Object value){
+        public Subproperties add(String key, Object value){
 
-            if(properties.containsKey(id)){
-                properties.get(id).put(key, value);
-            } else {
+            if(!properties.containsKey(id)){
                 properties.put(id, new HashMap<>());
-                properties.get(id).put(key, value);
             }
 
+            properties.get(id).put(key, value);
             return this;
         }
 
@@ -41,12 +39,16 @@ public class CypherQueryProperties {
         }
     }
 
-    public Subproperies forId(String id){
-         return new Subproperies(id);
+    public Subproperties forId(String id){
+         return new Subproperties(id);
     }
 
     public CypherQueryProperties add(String id, String key, Object value){
+        if(!properties.containsKey(id)){
+            properties.put(id, new HashMap<>());
+        }
 
+        properties.get(id).put(key, value);
         return this;
     }
 
@@ -59,5 +61,9 @@ public class CypherQueryProperties {
         }
 
         return this;
+    }
+
+    public Map<String, Map<String, Object>> getProperties() {
+        return properties;
     }
 }

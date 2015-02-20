@@ -1,15 +1,14 @@
 package com.poolingpeople.utils.neo4jApi;
 
 
+import com.poolingpeople.utils.neo4jApi.parsing.CypherQueryProperties;
+
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,22 +33,32 @@ public class Neo4jRestApiAdapterImpl implements Neo4jRestApiAdapter{
     }
 
     @Override
-    public List<Map<String, Object>> runParametrizedCypherQuery(String query, Map<String, Object> params) {
+    public List<Map<String, Object>> runParametrizedCypherQuery(String query, CypherQueryProperties params) {
         this.logger.log(Level.FINE, "Neo4j request with cypher query: " + query);
         Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query,params)));
         return responseParser.parseSimpleListOrException(response);
     }
 
     @Override
+    public List<Map<String, Object>> runParametrizedCypherQuery(String query, Map<String, Object> params) {
+        return null;
+    }
+
+    @Override
     public List<Map<String, Object>> runParametrizedCypherQuery(String query) {
-        return runParametrizedCypherQuery(query, null);
+        return runParametrizedCypherQuery(query, new HashMap<String, Object>());
+    }
+
+    @Override
+    public Collection<Map<String, Map<String, Object>>> runCypherQuery(String query, CypherQueryProperties params) {
+        this.logger.log(Level.FINE, "Neo4J request with cypher query: " + query);
+        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query,params)));
+        return responseParser.parseOrException(response);
     }
 
     @Override
     public Collection<Map<String, Map<String, Object>>> runCypherQuery(String query, Map<String, Object> params) {
-        this.logger.log(Level.FINE, "Neo4J request with cypher query: " + query);
-        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query,params)));
-        return responseParser.parseOrException(response);
+        return null;
     }
 
     @Override
