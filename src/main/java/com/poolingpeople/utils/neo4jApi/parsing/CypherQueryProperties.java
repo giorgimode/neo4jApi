@@ -1,6 +1,7 @@
 package com.poolingpeople.utils.neo4jApi.parsing;
 
 import java.util.HashMap;
+import java.util.InvalidPropertiesFormatException;
 import java.util.Map;
 
 /**
@@ -86,6 +87,9 @@ public class CypherQueryProperties {
     }
 
     public CypherQueryProperties setMode(Mode mode) {
+        if(mode == null)
+            throw new IllegalArgumentException("mode can not be null");
+
         this.mode = mode;
         return this;
     }

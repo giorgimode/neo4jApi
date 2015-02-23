@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.*;
 
 public class CypherQueryPropertiesUT {
@@ -193,8 +192,13 @@ public class CypherQueryPropertiesUT {
         props = new HashMap<>();
         props.put("key", "value");
         cut.add("test2", props);
+    }
 
+    @Test(expected=IllegalArgumentException.class)
+    public void testSetMode_null() throws Exception {
 
+        assertThat(cut.setMode(CypherQueryProperties.Mode.INDIVIDUAL), is(cut));
+        cut.setMode(null);
     }
 
 

@@ -52,15 +52,37 @@ public class Neo4jRestApiAdapter {
     }
     
     public Collection<Map<String, Map<String, Object>>> runCypherQuery(String query, CypherQueryProperties params) {
-        this.logger.log(Level.FINE, "Neo4J request with cypher query: " + query);
+        this.logger.log(Level.FINE, "Neo4j request with cypher query: " + query);
         Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query,params)));
         return responseParser.parseOrException(response);
     }
 
     public Collection<Map<String, Map<String, Object>>> runCypherQuery(String query, Map<String, Object> params) {
 
-        this.logger.log(Level.FINE, "Neo4J request with cypher query: " + query);
+        this.logger.log(Level.FINE, "Neo4j request with cypher query: " + query);
         return runCypherQuery(query, new CypherQueryProperties(CypherQueryProperties.Mode.INDIVIDUAL).add("id", params));
+    }
+
+    public Map<String, Object> getParametrizedSingleResult(String query, CypherQueryProperties params){
+
+        List<Map<String, Object>> r = runParametrizedCypherQuery(query, params);
+
+        if(r.size() > 1){
+            throw new NotSingleResultException("Found " + r.size() + " results");
+        }
+
+        return r.get(0);
+    }
+
+    public Map<String, Map<String, Object>> getSingleResult(String query, CypherQueryProperties params){
+
+        Collection<Map<String, Map<String, Object>>> r = runCypherQuery(query, params);
+
+        if(r.size() > 1){
+            throw new NotSingleResultException("Found " + r.size() + " results");
+        }
+
+        return r.iterator().next();
     }
 
     @Deprecated

@@ -6,20 +6,25 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 
 public class Neo4jRestApiAdapterST {
 
-    Neo4jRestApiAdapter neo4jRestApiAdapter;
+    Neo4jRestApiAdapter cut;
 
     @Before
     public void setUp() throws Exception {
-        neo4jRestApiAdapter = new Weld().initialize().instance().select(Neo4jRestApiAdapter.class).get();
-        neo4jRestApiAdapter.runParametrizedCypherQuery(createQuery());
+        cut = new Weld().initialize().instance().select(Neo4jRestApiAdapter.class).get();
+        cut.runCypherQuery("MATCH (n)\n" +
+                "OPTIONAL MATCH (n)-[r]-()\n" +
+                "DELETE n,r", new CypherQueryProperties());
     }
 
     private String createQuery(){
@@ -31,7 +36,7 @@ public class Neo4jRestApiAdapterST {
     @Test
     public void testCreateQuery(){
 
-        Collection<Map<String, Map<String, Object>>> r = neo4jRestApiAdapter.runCypherQuery(createQuery(),
+        Collection<Map<String, Map<String, Object>>> r = cut.runCypherQuery(createQuery(),
                 new CypherQueryProperties().forId("props").add("start", 1).add("end", 2).done("period", 7)
         );
 
@@ -44,7 +49,7 @@ public class Neo4jRestApiAdapterST {
 
         try {
 
-            Collection<Map<String, Map<String, Object>>> r = neo4jRestApiAdapter.runCypherQuery(createQuery(),
+            Collection<Map<String, Map<String, Object>>> r = cut.runCypherQuery(createQuery(),
                     new CypherQueryProperties().forId("falseProp").add("start", 1).add("end", 2).done("period", 7)
             );
 
@@ -57,51 +62,68 @@ public class Neo4jRestApiAdapterST {
 
     @Test
     public void testRunParametrizedCypherQuery() throws Exception {
+        String query = "CREATE (n:a{start:{start}, end:{end}}) return count(n) as total";
+        List<Map<String, Object>> r =  cut.runParametrizedCypherQuery(query,
+                new CypherQueryProperties(CypherQueryProperties.Mode.INDIVIDUAL)
+                        .forId("id").add("start", 0).done("end", 1));
 
-    }
+        assertEquals(r.size(), 1);
+        assertEquals(r.get(0).get("total"), 1L);
 
-    @Test
-    public void testRunParametrizedCypherQuery1() throws Exception {
+        query = "MATCH (n:a{start:{start}, end:{end}}) return n.start as start, n.end as end";
+        r =  cut.runParametrizedCypherQuery(query,
+                new CypherQueryProperties(CypherQueryProperties.Mode.INDIVIDUAL)
+                        .forId("id").add("start", 0).done("end", 1));
 
+        assertEquals(r.size(), 1);
+        assertTrue(r.get(0).keySet().contains("start"));
+        assertEquals(r.get(0).get("start"), 0L);
+        assertTrue(r.get(0).keySet().contains("end"));
+        assertEquals(r.get(0).get("end"), 1L);
+
+        query = "MATCH (n:a{start:{start}, end:{end}}) return n.start as start, n.end as end";
+        r =  cut.runParametrizedCypherQuery(query,
+                new CypherQueryProperties()
+                        .forId("id").add("start", 0).done("end", 1).getProperties().get("id"));
+
+        assertEquals(r.size(), 1);
+        assertTrue(r.get(0).keySet().contains("start"));
+        assertEquals(r.get(0).get("start"), 0L);
+        assertTrue(r.get(0).keySet().contains("end"));
+        assertEquals(r.get(0).get("end"), 1L);
     }
 
     @Test
     public void testRunCypherQuery() throws Exception {
+        String query = "CREATE (n:a{start:{start}, end:{end}}) return count(n) as total";
+        List<Map<String, Object>> r =  cut.runParametrizedCypherQuery(query,
+                new CypherQueryProperties(CypherQueryProperties.Mode.INDIVIDUAL)
+                        .forId("id").add("start", 0).done("end", 1));
 
+        assertEquals(r.size(), 1);
+        assertEquals(r.get(0).get("total"), 1L);
+
+        query = "MATCH (n:a{start:{start}, end:{end}}) return n.start as start, n.end as end";
+        r =  cut.runParametrizedCypherQuery(query,
+                new CypherQueryProperties(CypherQueryProperties.Mode.INDIVIDUAL)
+                        .forId("id").add("start", 0).done("end", 1));
+
+        assertEquals(r.size(), 1);
+        assertTrue(r.get(0).keySet().contains("start"));
+        assertEquals(r.get(0).get("start"), 0L);
+        assertTrue(r.get(0).keySet().contains("end"));
+        assertEquals(r.get(0).get("end"), 1L);
+
+        query = "MATCH (n:a{start:{start}, end:{end}}) return n.start as start, n.end as end";
+        r =  cut.runParametrizedCypherQuery(query,
+                new CypherQueryProperties()
+                        .forId("id").add("start", 0).done("end", 1).getProperties().get("id"));
+
+        assertEquals(r.size(), 1);
+        assertTrue(r.get(0).keySet().contains("start"));
+        assertEquals(r.get(0).get("start"), 0L);
+        assertTrue(r.get(0).keySet().contains("end"));
+        assertEquals(r.get(0).get("end"), 1L);
     }
 
-    @Test
-    public void testSchemaIsCorrectlyLoaded() throws Exception {
-
-    }
-
-    @Test
-    public void testGetConstraints() throws Exception {
-
-    }
-
-    @Test
-    public void testGetIndexes() throws Exception {
-
-    }
-
-    @Test
-    public void testCreateIndex() throws Exception {
-
-    }
-
-    @Test
-    public void testDropIndex() throws Exception {
-
-    }
-
-    @Test
-    public void testCreateConstraint() throws Exception {
-
-    }
-
-    @Test
-    public void testDropConstraint() throws Exception {
-
-    }
 }
