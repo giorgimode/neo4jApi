@@ -28,7 +28,7 @@ public class RequestBodyBuilderHelperUT {
     public void testGetCypherBody() throws Exception {
 
         String query = "CREATE (n:a{start:'123'}) return count(n) as total";
-        JsonObject object = cut.getCypherBody(query, null);
+        JsonObject object = cut.getCypherBody(query, new HashMap<String, Object>());
         String expected = "{\"statements\":[{\"statement\":\"CREATE (n:a{start:'123'}) return count(n) as total\",\"parameters\":{}}]}";
         assertThat(object.toString(), is(expected));
     }

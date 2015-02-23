@@ -19,6 +19,7 @@ public class RequestBodyBuilderHelper {
     private static final String statement = "statement";
     private static final String statements = "statements";
     private static final String parameters = "parameters";
+    private static final String props = "props";
 
 
     /**
@@ -69,6 +70,35 @@ public class RequestBodyBuilderHelper {
         JsonObjectBuilder statementBuilder = Json.createObjectBuilder()
                 .add(statement, query)
                 .add(parameters, propertiesBuilder);
+
+        JsonArrayBuilder statementsBuilder = Json.createArrayBuilder().add(statementBuilder);
+        JsonObjectBuilder bodyBuilder = Json.createObjectBuilder().add(statements, statementsBuilder);
+
+        return bodyBuilder.build();
+    }
+
+    public JsonObject getCypherBody(String query, Map<String, Object> params) {
+
+        JsonObjectBuilder propsBuilder = Json.createObjectBuilder();
+
+        if(params != null)
+            for (Map.Entry<String, Object> param : params.entrySet()) {
+
+                Object value = param.getValue();
+
+                if(value instanceof String)
+                    propsBuilder.add(param.getKey(), (String)param.getValue());
+
+                if(value instanceof Integer)
+                    propsBuilder.add(param.getKey(), (Integer)param.getValue());
+
+                if(value instanceof Long)
+                    propsBuilder.add(param.getKey(), (Long)param.getValue());
+            }
+
+        JsonObjectBuilder statementBuilder = Json.createObjectBuilder()
+                .add(statement, query)
+                .add(parameters, propsBuilder);
 
         JsonArrayBuilder statementsBuilder = Json.createArrayBuilder().add(statementBuilder);
         JsonObjectBuilder bodyBuilder = Json.createObjectBuilder().add(statements, statementsBuilder);

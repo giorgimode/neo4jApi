@@ -9,17 +9,16 @@ import java.util.Collection;
 import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertThat;
 
 
-public class Neo4jRestApiAdapterImplST {
+public class Neo4jRestApiAdapterST {
 
     Neo4jRestApiAdapter neo4jRestApiAdapter;
 
     @Before
     public void setUp() throws Exception {
-        neo4jRestApiAdapter = new Weld().initialize().instance().select(Neo4jRestApiAdapterImpl.class).get();
+        neo4jRestApiAdapter = new Weld().initialize().instance().select(Neo4jRestApiAdapter.class).get();
         neo4jRestApiAdapter.runParametrizedCypherQuery(createQuery());
     }
 
