@@ -18,6 +18,12 @@ public class Neo4jClientErrorException extends Neo4jException{
         this.response = response;
     }
 
+    public Neo4jClientErrorException(String message, String exceptionName, String exceptionFullName) {
+        super(message);
+        this.exceptionFullName = exceptionFullName;
+        this.exceptionName = exceptionName;
+    }
+
     public String getExceptionFullName() {
         return exceptionFullName;
     }
