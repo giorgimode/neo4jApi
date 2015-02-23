@@ -8,6 +8,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
+import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -131,7 +132,13 @@ public class Neo4jRestApiAdapter {
                 .header("Content-Type","application/json");
     }
 
-    public void setEndpoint(Endpoint endpoint) {
+    public Neo4jRestApiAdapter setEndpoint(Endpoint endpoint) {
+
+        if(endpoint == null){
+            throw new InvalidParameterException("Endpoint can not be null");
+        }
+
         this.endpoint = endpoint;
+        return this;
     }
 }
