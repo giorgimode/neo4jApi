@@ -28,7 +28,13 @@ public class ResponseStreamingParser {
 
     public List<Map<String,Object>> parseList(InputStream inputStream) {
 
-        Collection<Map<String, Map<String, Object>>> r = statesManager.parse(inputStream).getResultMixed();
+        ResultContainer resultContainer = statesManager.parse(inputStream);
+
+        if(resultContainer.getError() != null){
+            throw parseException(resultContainer);
+        }
+
+        Collection<Map<String, Map<String, Object>>> r = resultContainer.getResultMixed();
         List<Map<String,Object>> result = new ArrayList<>();
 
         for(Map<String, Map<String, Object>> row : r){
@@ -76,7 +82,7 @@ public class ResponseStreamingParser {
 
         ResultContainer resultContainer = statesManager.parse(json);
 
-        if(statesManager.parse(json).getError() != null){
+        if(resultContainer.getError() != null){
             throw parseException(resultContainer);
         } else {
             return resultContainer.getResultMixed();
