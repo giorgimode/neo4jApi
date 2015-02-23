@@ -10,11 +10,9 @@ import javax.json.stream.JsonParser;
 /**
  * Created by alacambra on 1/17/15.
  */
-@ApplicationScoped
 public class ReadColumnsName implements State {
 
-    @Inject
-    ReadStatementResult readStatementResult = new ReadStatementResult();
+    NAMES readStatementResult = NAMES.READ_STATEMENT_RESULT;
 
     @Override
     public NAMES process(JsonParser parser,ResultContainer result) {
@@ -27,7 +25,7 @@ public class ReadColumnsName implements State {
 
         }
         if(event == JsonParser.Event.END_ARRAY){
-            return readStatementResult.getName();
+            return readStatementResult;
         }
 
         return this.getName();

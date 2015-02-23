@@ -11,11 +11,9 @@ import javax.json.stream.JsonParser;
 /**
  * Created by alacambra on 1/17/15.
  */
-@ApplicationScoped
 public class ReadObjectValue implements State {
 
-    @Inject
-    ReadColumnValue readColumnValue;
+    NAMES readColumnValue = NAMES.READ_COLUM_VALUE;
 
     @Inject
     JsonValueReader helper;
@@ -27,7 +25,7 @@ public class ReadObjectValue implements State {
 
         if(event == JsonParser.Event.END_OBJECT){
             resultContainer.columnValueRead();
-            return readColumnValue.getName();
+            return readColumnValue;
         }
 
         if(event == JsonParser.Event.KEY_NAME){

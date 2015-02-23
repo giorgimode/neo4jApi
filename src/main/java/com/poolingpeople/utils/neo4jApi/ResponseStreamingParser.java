@@ -20,7 +20,7 @@ import java.util.*;
 public class ResponseStreamingParser {
 
     @Inject
-    StatesManager statesManager = new StatesManager();
+    StatesManager statesManager;
 
     public List<Map<String,Object>> parseList(String json) {
         return parseList(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)));

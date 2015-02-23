@@ -11,17 +11,13 @@ import javax.json.stream.JsonParser;
 /**
  * Created by alacambra on 1/17/15.
  */
-@ApplicationScoped
 public class ReadColumnValue implements State {
-    @Inject
-    ReadRow readRow;
 
-    @Inject
-    ReadObjectValue readObjectValue;
+    NAMES readRow = NAMES.READ_ROW;
+    NAMES readObjectValue = NAMES.READ_OBJECT_VALUE;
 
     @Inject
     JsonValueReader helper;
-
 
     @Override
     public NAMES process(JsonParser parser, ResultContainer resultContainer) {
@@ -30,11 +26,11 @@ public class ReadColumnValue implements State {
 
         if(event == JsonParser.Event.START_OBJECT){
             resultContainer.startNewColumn();
-            return readObjectValue.getName();
+            return readObjectValue;
         }
 
         if(event == JsonParser.Event.END_ARRAY){
-            return readRow.getName();
+            return readRow;
         }
 
         Object value = helper.getValueFromStream(event, parser);

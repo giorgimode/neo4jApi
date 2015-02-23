@@ -11,11 +11,9 @@ import javax.json.stream.JsonParser;
 /**
  * Created by alacambra on 1/18/15.
  */
-@ApplicationScoped
 public class ReadError implements State{
 
-    @Inject
-    ReadErrors readErrors;
+    NAMES readErrors= NAMES.READ_ERRORS;
 
     @Override
     public NAMES process(JsonParser parser, ResultContainer resultContainer) {
@@ -23,7 +21,7 @@ public class ReadError implements State{
         JsonParser.Event event = parser.next();
 
         if(event == JsonParser.Event.END_OBJECT){
-            return readErrors.getName();
+            return readErrors;
         }
 
         if(event == JsonParser.Event.KEY_NAME){

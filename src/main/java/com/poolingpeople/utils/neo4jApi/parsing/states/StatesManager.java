@@ -7,6 +7,7 @@ import com.poolingpeople.utils.neo4jApi.parsing.State;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.stream.JsonParser;
+import javax.lang.model.element.Name;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -19,8 +20,6 @@ import java.util.logging.Logger;
  */
 public class StatesManager {
 
-    @Inject
-    MainState mainState;
     Map<State.NAMES,State> states;
 
     Logger logger = Logger.getLogger(this.getClass().getName());
@@ -30,7 +29,7 @@ public class StatesManager {
         JsonValueReader helper = new JsonValueReader();
         states = new HashMap<>();
 
-        mainState = new MainState();
+        MainState mainState = new MainState();
         ReadColumnsName readColumnsName = new ReadColumnsName();
         ReadColumnValue readColumnValue = new ReadColumnValue();
         ReadData readData = new ReadData();
@@ -40,33 +39,8 @@ public class StatesManager {
         ReadRow readRow = new ReadRow();
         ReadStatementResult readStatementResult = new ReadStatementResult();
 
-
-        mainState.readStatementResult = readStatementResult;
-        mainState.readErrors = readErrors;
-
-        readColumnsName.readStatementResult = readStatementResult;
-
-        readColumnValue.readObjectValue = readObjectValue;
-        readColumnValue.readRow = readRow;
         readColumnValue.helper = helper;
-
-        readData.readRow = readRow;
-        readData.readStatementResult = readStatementResult;
-
-        readError.readErrors = readErrors;
-
-        readErrors.readError = readError;
-
-        readObjectValue.readColumnValue = readColumnValue;
         readObjectValue.helper = helper;
-
-        readRow.readColumnValue = readColumnValue;
-        readRow.readData = readData;
-
-        readStatementResult.mainState = mainState;
-        readStatementResult.readColumnName = readColumnsName;
-        readStatementResult.readData = readData;
-
 
         states.put(State.NAMES.MAIN_STATE, mainState);
         states.put(State.NAMES.READ_COLUM_NAME, readColumnsName);
@@ -83,7 +57,7 @@ public class StatesManager {
     public ResultContainer parse(InputStream inputStream){
 
         JsonParser parser = Json.createParser(inputStream);
-        State currentState = mainState;
+        State currentState = states.get(State.NAMES.MAIN_STATE);
         ResultContainer resultContainer = new ResultContainer();
 
         State.NAMES lastState = null;

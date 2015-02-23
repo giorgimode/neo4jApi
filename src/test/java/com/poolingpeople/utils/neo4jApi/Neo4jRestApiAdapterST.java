@@ -1,7 +1,7 @@
 package com.poolingpeople.utils.neo4jApi;
 
 import com.poolingpeople.utils.neo4jApi.parsing.CypherQueryProperties;
-import org.jboss.weld.environment.se.Weld;
+import com.poolingpeople.utils.neo4jApi.parsing.states.StatesManager;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,7 +21,12 @@ public class Neo4jRestApiAdapterST {
 
     @Before
     public void setUp() throws Exception {
-        cut = new Weld().initialize().instance().select(Neo4jRestApiAdapter.class).get();
+        cut = new Neo4jRestApiAdapter();
+        cut.endpoint = new Endpoint();
+        cut.helper = new RequestBodyBuilderHelper();
+        cut.responseParser = new ResponseStreamingParser();
+        cut.responseParser.statesManager = new StatesManager();
+//        new Weld().initialize().instance().select(Neo4jRestApiAdapter.class).get();
         cut.runCypherQuery("MATCH (n)\n" +
                 "OPTIONAL MATCH (n)-[r]-()\n" +
                 "DELETE n,r", new CypherQueryProperties());

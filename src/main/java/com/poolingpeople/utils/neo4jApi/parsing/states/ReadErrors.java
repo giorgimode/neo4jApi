@@ -11,14 +11,10 @@ import javax.json.stream.JsonParser;
 /**
  * Created by alacambra on 1/18/15.
  */
-@ApplicationScoped
 public class ReadErrors implements State{
 
-    @Inject
-    ReadError readError = new ReadError();
-
-    @Inject
-    MainState mainState = new MainState();
+    NAMES readError = NAMES.READ_ERROR;
+    NAMES  mainState = NAMES.MAIN_STATE;
 
     @Override
     public NAMES process(JsonParser parser, ResultContainer resultContainer) {
@@ -31,11 +27,11 @@ public class ReadErrors implements State{
 
         if(event == JsonParser.Event.START_OBJECT){
             resultContainer.startError();
-            return readError.getName();
+            return readError;
         }
 
         if(event == JsonParser.Event.END_ARRAY){
-            return mainState.getName();
+            return mainState;
         }
 
         throw new RuntimeException("Unexpceted event " + event);
