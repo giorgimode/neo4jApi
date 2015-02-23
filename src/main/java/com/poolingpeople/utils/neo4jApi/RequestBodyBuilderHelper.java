@@ -19,8 +19,6 @@ public class RequestBodyBuilderHelper {
     private static final String statement = "statement";
     private static final String statements = "statements";
     private static final String parameters = "parameters";
-    private static final String props = "props";
-
 
     /**
      * <code>
@@ -38,7 +36,17 @@ public class RequestBodyBuilderHelper {
      * @param query
      * @return
      */
+
     public JsonObject getCypherBody(String query, CypherQueryProperties properties) {
+        return properties.getMode() == CypherQueryProperties.Mode.COLLECTION ?
+                getCypherBodyCollectionParams(query, properties) : getCypherBodyIndividualParams(query, properties);
+    }
+
+    public JsonObject getCypherBody(String query, Map<String, Object> properties) {
+        return getCypherBodyIndividualParams(query, properties);
+    }
+
+    public JsonObject getCypherBodyCollectionParams(String query, CypherQueryProperties properties) {
 
         JsonObjectBuilder propertiesBuilder = Json.createObjectBuilder();
 
@@ -77,7 +85,7 @@ public class RequestBodyBuilderHelper {
         return bodyBuilder.build();
     }
 
-    public JsonObject getCypherBody(String query, Map<String, Object> params) {
+    public JsonObject getCypherBodyIndividualParams(String query, Map<String, Object> params) {
 
         JsonObjectBuilder propsBuilder = Json.createObjectBuilder();
 
@@ -104,5 +112,12 @@ public class RequestBodyBuilderHelper {
         JsonObjectBuilder bodyBuilder = Json.createObjectBuilder().add(statements, statementsBuilder);
 
         return bodyBuilder.build();
+    }
+
+    public JsonObject getCypherBodyIndividualParams(String query, CypherQueryProperties params) {
+
+        String key = params.getProperties().keySet().iterator().next();
+        return getCypherBodyIndividualParams(query, params.getProperties().get(key));
+
     }
 }

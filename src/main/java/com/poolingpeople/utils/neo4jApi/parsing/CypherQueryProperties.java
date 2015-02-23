@@ -89,4 +89,8 @@ public class CypherQueryProperties {
         this.mode = mode;
         return this;
     }
+
+    public Mode getMode() {
+        return mode;
+    }
 }

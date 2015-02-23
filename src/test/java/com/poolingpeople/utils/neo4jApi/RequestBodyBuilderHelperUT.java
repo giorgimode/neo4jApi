@@ -45,7 +45,7 @@ public class RequestBodyBuilderHelperUT {
     }
 
     @Test
-    public void testGetCypherBodyWithMultiParams_create_multiprop() throws Exception {
+    public void testGetCypherBodyWithMultiParams_create_multiprop_collection_mode() throws Exception {
 
         String query = "CREATE (n:c{propsA}), (m:c{propsB}) return count(n) as total";
         CypherQueryProperties params = new CypherQueryProperties().add("propsA", "start", 5).add("propsB", "end", 5);
@@ -63,6 +63,38 @@ public class RequestBodyBuilderHelperUT {
     }
 
     @Test
+    public void testGetCypherBodyWithMultiParams_create_multiprop_individual_mode() throws Exception {
+
+        String query = "CREATE (n:c{start:{start}}), (m:c{end:{end}}) return count(n) as total";
+        CypherQueryProperties params = new CypherQueryProperties(CypherQueryProperties.Mode.INDIVIDUAL)
+                .add("propsA", "start", 5).add("propsA", "end", 5);
+
+        JsonObject object = cut.getCypherBody(query, params);
+
+        String expected = "{\"statements\":[{\"statement\":\"CREATE (n:c{start:{start}}), (m:c{end:{end}}) return count(n) as total\"," +
+                "\"parameters\":{\"start\":5,\"end\":5}" +
+                "}]}";
+
+        assertThat(object.toString(), is(expected));
+    }
+
+    @Test
+    public void testGetCypherBodyWithMultiParams_create_singleprop_individual_mode() throws Exception {
+
+        String query = "CREATE (n:c{start:{start}, end:{end}}) return count(n) as total";
+        CypherQueryProperties params = new CypherQueryProperties(CypherQueryProperties.Mode.INDIVIDUAL)
+                .add("propsA", "start", 5).add("propsA", "end", 5);
+
+        JsonObject object = cut.getCypherBody(query, params);
+
+        String expected = "{\"statements\":[{\"statement\":\"CREATE (n:c{start:{start}, end:{end}}) return count(n) as total\"," +
+                "\"parameters\":{\"start\":5,\"end\":5}" +
+                "}]}";
+
+        assertThat(object.toString(), is(expected));
+    }
+
+    @Test
     public void testGetCypherBodyWithMultiParams_create() throws Exception {
 
         String query = "CREATE (n:c{propsA}), (m:c{propsB}) return count(n) as total";
@@ -76,8 +108,6 @@ public class RequestBodyBuilderHelperUT {
                 "}}]}";
 
         assertThat(object.toString(), is(expected));
-//        {"statements":[{"statement":"CREATE (n:d{start:{start}, end:{end}}) return count(n) as total","parameters":{"start":5, "end":6}}]}
-
     }
 
     @Test
