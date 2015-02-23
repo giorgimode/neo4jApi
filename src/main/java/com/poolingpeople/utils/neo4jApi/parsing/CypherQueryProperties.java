@@ -7,7 +7,22 @@ import java.util.Map;
  * Created by alacambra on 19.02.15.
  */
 public class CypherQueryProperties {
+
     Map<String, Map<String, Object>> properties = new HashMap<>();
+    Mode mode = Mode.COLLECTION;
+
+    public CypherQueryProperties(Mode mode) {
+        this.mode = mode;
+    }
+
+    public CypherQueryProperties() {
+    }
+
+    public static enum Mode{
+        COLLECTION,
+        INDIVIDUAL
+    }
+
 
     public class Subproperties {
 
@@ -21,9 +36,7 @@ public class CypherQueryProperties {
 
         public Subproperties add(String key, Object value){
 
-            if(!properties.containsKey(id)){
-                properties.put(id, new HashMap<>());
-            }
+            addId(id);
 
             properties.get(id).put(key, value);
             return this;
@@ -40,30 +53,40 @@ public class CypherQueryProperties {
     }
 
     public Subproperties forId(String id){
-         return new Subproperties(id);
+        return new Subproperties(id);
     }
 
     public CypherQueryProperties add(String id, String key, Object value){
-        if(!properties.containsKey(id)){
-            properties.put(id, new HashMap<>());
-        }
 
+        addId(id);
         properties.get(id).put(key, value);
         return this;
     }
 
     public CypherQueryProperties add(String id, Map<String, Object> props){
 
-        if(properties.containsKey(id)){
-            properties.get(id).putAll(props);
-        } else {
-            properties.put(id, props);
-        }
+        addId(id);
+        properties.get(id).putAll(props);
 
         return this;
     }
 
+    private void addId(String key){
+        if(!properties.containsKey(key)){
+            if(properties.size() > 0 && mode == Mode.INDIVIDUAL){
+                throw new RuntimeException("Only one properties map allowed. Using individual mode");
+            }
+            properties.put(key, new HashMap<>());
+        }
+
+    }
+
     public Map<String, Map<String, Object>> getProperties() {
         return properties;
+    }
+
+    public CypherQueryProperties setMode(Mode mode) {
+        this.mode = mode;
+        return this;
     }
 }
