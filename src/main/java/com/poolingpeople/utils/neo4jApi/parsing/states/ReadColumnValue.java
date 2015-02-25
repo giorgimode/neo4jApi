@@ -19,6 +19,13 @@ public class ReadColumnValue implements State {
     @Inject
     JsonValueReader helper;
 
+    public ReadColumnValue() {
+    }
+
+    public ReadColumnValue(JsonValueReader helper) {
+        this.helper = helper;
+    }
+
     @Override
     public NAMES process(JsonParser parser, ResultContainer resultContainer) {
 
