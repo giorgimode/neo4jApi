@@ -61,6 +61,9 @@ public class RequestBodyBuilderHelper {
 
                     Object value = param.getValue();
 
+                    if (value == null)
+                        propertyBuilder.addNull(param.getKey());
+
                     if (value instanceof String)
                         propertyBuilder.add(param.getKey(), (String) param.getValue());
 
@@ -93,6 +96,9 @@ public class RequestBodyBuilderHelper {
             for (Map.Entry<String, Object> param : params.entrySet()) {
 
                 Object value = param.getValue();
+
+                if (value == null)
+                    propsBuilder.addNull(param.getKey());
 
                 if(value instanceof String)
                     propsBuilder.add(param.getKey(), (String)param.getValue());
