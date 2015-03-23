@@ -33,7 +33,12 @@ public class Neo4jRestApiAdapter {
         this.endpoint = endpoint;
     }
 
-    
+    public Neo4jRestApiAdapter(RequestBodyBuilderHelper helper, ResponseStreamingParser responseParser, Endpoint endpoint) {
+        this.helper = helper;
+        this.responseParser = responseParser;
+        this.endpoint = endpoint;
+    }
+
     public List<Map<String, Object>> runParametrizedCypherQuery(String query, CypherQueryProperties params) {
         this.logger.log(Level.FINE, "Neo4j request with cypher query: " + query);
         Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query,params)));

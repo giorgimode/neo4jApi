@@ -22,6 +22,13 @@ public class ResponseStreamingParser {
     @Inject
     StatesManager statesManager;
 
+    public ResponseStreamingParser() {
+    }
+
+    public ResponseStreamingParser(StatesManager statesManager) {
+        this.statesManager = statesManager;
+    }
+
     public List<Map<String,Object>> parseList(String json) {
         return parseList(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)));
     }
