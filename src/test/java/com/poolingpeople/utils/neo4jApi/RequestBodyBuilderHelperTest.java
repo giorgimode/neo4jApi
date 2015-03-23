@@ -13,7 +13,7 @@ import java.util.Map;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
-public class RequestBodyBuilderHelperUT {
+public class RequestBodyBuilderHelperTest {
 
     RequestBodyBuilderHelper cut;
 
@@ -41,6 +41,19 @@ public class RequestBodyBuilderHelperUT {
         JsonObject object = cut.getCypherBody(query, params);
 
         String expected = "{\"statements\":[{\"statement\":\"CREATE (n:a{props}) return count(n) as total\",\"parameters\":{\"props\":{\"start\":5}}}]}";
+        assertThat(object.toString(), is(expected));
+    }
+
+    @Test
+    public void testGetCypherBodyWithParamsContainingNulls() throws Exception {
+
+        String query = "MATCH (n) SET n.start = {start}, n.end = {end} RETURN count(n) as total";
+        CypherQueryProperties params = new CypherQueryProperties()
+                .add("props", "start", 5)
+                .add("props", "end", null);
+        JsonObject object = cut.getCypherBody(query, params);
+
+        String expected = "{\"statements\":[{\"statement\":\"MATCH (n) SET n.start = {start}, n.end = {end} RETURN count(n) as total\",\"parameters\":{\"props\":{\"start\":5,\"end\":null}}}]}";
         assertThat(object.toString(), is(expected));
     }
 
