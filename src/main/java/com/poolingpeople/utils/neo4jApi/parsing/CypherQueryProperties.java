@@ -10,7 +10,7 @@ import java.util.Map;
 public class CypherQueryProperties {
 
     Map<String, Map<String, Object>> properties = new HashMap<>();
-    Mode mode = Mode.COLLECTION;
+    Mode mode = Mode.INDIVIDUAL;
 
     public CypherQueryProperties(Mode mode) {
         this.mode = mode;
