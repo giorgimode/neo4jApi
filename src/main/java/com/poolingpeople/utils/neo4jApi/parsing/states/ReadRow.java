@@ -3,9 +3,6 @@ package com.poolingpeople.utils.neo4jApi.parsing.states;
 import com.poolingpeople.utils.neo4jApi.parsing.ResultContainer;
 import com.poolingpeople.utils.neo4jApi.parsing.State;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 import javax.json.stream.JsonParser;
 
 /**
@@ -13,7 +10,7 @@ import javax.json.stream.JsonParser;
  */
 public class ReadRow implements State {
 
-   NAMES  readColumnValue = NAMES.READ_COLUM_VALUE;
+   NAMES  readColumnValue = NAMES.READ_COLUMN_VALUE;
    NAMES readData = NAMES.READ_DATA;
 
 

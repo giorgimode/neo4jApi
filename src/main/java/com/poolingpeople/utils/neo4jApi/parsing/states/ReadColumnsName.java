@@ -3,8 +3,6 @@ package com.poolingpeople.utils.neo4jApi.parsing.states;
 import com.poolingpeople.utils.neo4jApi.parsing.ResultContainer;
 import com.poolingpeople.utils.neo4jApi.parsing.State;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.json.stream.JsonParser;
 
 /**
@@ -33,6 +31,6 @@ public class ReadColumnsName implements State {
 
     @Override
     public NAMES getName() {
-        return NAMES.READ_COLUM_NAME;
+        return NAMES.READ_COLUMN_NAME;
     }
 }

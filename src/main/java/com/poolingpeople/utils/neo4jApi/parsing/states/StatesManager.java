@@ -4,10 +4,8 @@ import com.poolingpeople.utils.neo4jApi.parsing.JsonValueReader;
 import com.poolingpeople.utils.neo4jApi.parsing.ResultContainer;
 import com.poolingpeople.utils.neo4jApi.parsing.State;
 
-import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.stream.JsonParser;
-import javax.lang.model.element.Name;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -43,8 +41,8 @@ public class StatesManager {
         readObjectValue.helper = helper;
 
         states.put(State.NAMES.MAIN_STATE, mainState);
-        states.put(State.NAMES.READ_COLUM_NAME, readColumnsName);
-        states.put(State.NAMES.READ_COLUM_VALUE, readColumnValue);
+        states.put(State.NAMES.READ_COLUMN_NAME, readColumnsName);
+        states.put(State.NAMES.READ_COLUMN_VALUE, readColumnValue);
         states.put(State.NAMES.READ_DATA, readData);
         states.put(State.NAMES.READ_ERROR, readError);
         states.put(State.NAMES.READ_ERRORS, readErrors);

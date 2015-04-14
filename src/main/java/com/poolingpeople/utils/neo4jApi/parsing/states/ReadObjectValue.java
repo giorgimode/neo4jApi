@@ -4,7 +4,6 @@ import com.poolingpeople.utils.neo4jApi.parsing.JsonValueReader;
 import com.poolingpeople.utils.neo4jApi.parsing.ResultContainer;
 import com.poolingpeople.utils.neo4jApi.parsing.State;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.stream.JsonParser;
 
@@ -13,7 +12,7 @@ import javax.json.stream.JsonParser;
  */
 public class ReadObjectValue implements State {
 
-    NAMES readColumnValue = NAMES.READ_COLUM_VALUE;
+    NAMES readColumnValue = NAMES.READ_COLUMN_VALUE;
 
     @Inject
     JsonValueReader helper;

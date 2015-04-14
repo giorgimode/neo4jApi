@@ -9,8 +9,8 @@ public interface State {
 
     public static enum NAMES{
         MAIN_STATE,
-        READ_COLUM_NAME,
-        READ_COLUM_VALUE,
+        READ_COLUMN_NAME,
+        READ_COLUMN_VALUE,
         READ_DATA,
         READ_ERROR,
         READ_ERRORS,

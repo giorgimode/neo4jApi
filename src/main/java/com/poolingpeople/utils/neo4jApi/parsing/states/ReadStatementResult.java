@@ -3,9 +3,6 @@ package com.poolingpeople.utils.neo4jApi.parsing.states;
 import com.poolingpeople.utils.neo4jApi.parsing.ResultContainer;
 import com.poolingpeople.utils.neo4jApi.parsing.State;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 import javax.json.stream.JsonParser;
 
 /**
@@ -13,7 +10,7 @@ import javax.json.stream.JsonParser;
  */
 public class ReadStatementResult implements State {
 
-    NAMES readColumnName = NAMES.READ_COLUM_NAME;
+    NAMES readColumnName = NAMES.READ_COLUMN_NAME;
     NAMES readData = NAMES.READ_DATA;
     NAMES mainState = NAMES.MAIN_STATE;
 
