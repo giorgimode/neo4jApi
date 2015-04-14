@@ -2,6 +2,7 @@ package com.poolingpeople.utils.neo4jApi.parsing.states;
 
 import com.poolingpeople.utils.neo4jApi.parsing.StatementResult;
 import com.poolingpeople.utils.neo4jApi.parsing.State;
+import com.poolingpeople.utils.neo4jApi.parsing.StatementsContainer;
 
 import javax.json.stream.JsonParser;
 
@@ -15,11 +16,11 @@ public class ReadRow implements State {
 
 
     @Override
-    public NAMES process(JsonParser parser, StatementResult statementResult) {
+    public NAMES process(JsonParser parser, StatementsContainer statementsContainer) {
         JsonParser.Event event = parser.next();
 
         if (event == JsonParser.Event.START_ARRAY) {
-            statementResult.startNewRow();
+            statementsContainer.getCurrent().startNewRow();
             return readColumnValue;
         }
 

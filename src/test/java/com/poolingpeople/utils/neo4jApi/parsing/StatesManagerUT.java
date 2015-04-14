@@ -26,7 +26,10 @@ public class StatesManagerUT {
         InputStream stream = this.getClass().getClassLoader().getResourceAsStream("TransactionalResponse.json");
 
         StatesManager statesManager = new StatesManager();
-        StatementResult statementResult = statesManager.parse(stream);
+        StatementResult statementResult = statesManager
+                .parse(stream)
+                .getSingleStatement()
+                .orElse(new StatementResult());
 
         Collection<Map<String, Map<String, Object>>> result = statementResult.getResultMixed();
 
@@ -47,7 +50,11 @@ public class StatesManagerUT {
         InputStream stream = this.getClass().getClassLoader().getResourceAsStream("TxResponseError.json");
 
         StatesManager statesManager = new StatesManager();
-        StatementResult statementResult = statesManager.parse(stream);
+        StatementResult statementResult = statesManager
+                .parse(stream)
+                .getSingleStatement()
+                .orElse(new StatementResult());
+
 
         StatementResult.Error result = statementResult.getError();
 

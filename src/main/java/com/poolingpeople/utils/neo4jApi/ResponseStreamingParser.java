@@ -32,7 +32,11 @@ public class ResponseStreamingParser {
 
     public List<Map<String,Object>> parseList(InputStream inputStream) {
 
-        StatementResult statementResult = statesManager.parse(inputStream);
+        StatementResult statementResult =
+                statesManager
+                        .parse(inputStream)
+                        .getSingleStatement()
+                        .orElse(new StatementResult());
 
         if(statementResult.getError() != null){
             throw parseException(statementResult);
@@ -84,7 +88,11 @@ public class ResponseStreamingParser {
 
     public Collection<Map<String,Map<String,Object>>> parse(String json) {
 
-        StatementResult statementResult = statesManager.parse(json);
+        StatementResult statementResult =
+                statesManager
+                        .parse(json)
+                        .getSingleStatement()
+                        .orElse(new StatementResult());
 
         if(statementResult.getError() != null){
             throw parseException(statementResult);
@@ -94,11 +102,20 @@ public class ResponseStreamingParser {
     }
 
     public Collection<Map<String,Map<String,Object>>> parse(InputStream inputStream){
-        return statesManager.parse(inputStream).getResultMixed();
+        return statesManager
+                        .parse(inputStream)
+                        .getSingleStatement()
+                        .orElse(new StatementResult()).getResultMixed();
     }
 
     private Neo4jClientErrorException parseException(Response response){
-        StatementResult.Error error = statesManager.parse(response.readEntity(InputStream.class)).getError();
+
+        StatementResult.Error error =
+                statesManager
+                .parse(response.readEntity(InputStream.class))
+                .getSingleStatement()
+                .orElse(new StatementResult()).getError();
+
         return new Neo4jClientErrorException(error.getMessage(), error.getCode(), error.getCode());
     }
 

@@ -2,6 +2,7 @@ package com.poolingpeople.utils.neo4jApi.parsing.states;
 
 import com.poolingpeople.utils.neo4jApi.parsing.StatementResult;
 import com.poolingpeople.utils.neo4jApi.parsing.State;
+import com.poolingpeople.utils.neo4jApi.parsing.StatementsContainer;
 
 import javax.json.stream.JsonParser;
 
@@ -14,7 +15,7 @@ public class ReadData implements State {
     NAMES  readStatementResult = NAMES.READ_STATEMENT_RESULT;
 
     @Override
-    public NAMES process(JsonParser parser, StatementResult result) {
+    public NAMES process(JsonParser parser, StatementsContainer statementsContainer) {
 
         JsonParser.Event event = parser.next();
 

@@ -1,8 +1,8 @@
 package com.poolingpeople.utils.neo4jApi.parsing.states;
 
 import com.poolingpeople.utils.neo4jApi.parsing.JsonValueReader;
-import com.poolingpeople.utils.neo4jApi.parsing.StatementResult;
 import com.poolingpeople.utils.neo4jApi.parsing.State;
+import com.poolingpeople.utils.neo4jApi.parsing.StatementsContainer;
 
 import javax.inject.Inject;
 import javax.json.stream.JsonParser;
@@ -18,19 +18,19 @@ public class ReadObjectValue implements State {
     JsonValueReader helper;
 
     @Override
-    public NAMES process(JsonParser parser, StatementResult statementResult) {
+    public NAMES process(JsonParser parser, StatementsContainer statementsContainer) {
 
         JsonParser.Event event = parser.next();
 
         if(event == JsonParser.Event.END_OBJECT){
-            statementResult.columnValueRead();
+            statementsContainer.getCurrent().columnValueRead();
             return readColumnValue;
         }
 
         if(event == JsonParser.Event.KEY_NAME){
             String key = parser.getString();
             JsonParser.Event ev = parser.next();
-            statementResult.addColumnValue(key, helper.getValueFromStream(ev, parser));
+            statementsContainer.getCurrent().addColumnValue(key, helper.getValueFromStream(ev, parser));
             return this.getName();
         }
 

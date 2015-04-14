@@ -1,7 +1,7 @@
 package com.poolingpeople.utils.neo4jApi.parsing.states;
 
-import com.poolingpeople.utils.neo4jApi.parsing.StatementResult;
 import com.poolingpeople.utils.neo4jApi.parsing.State;
+import com.poolingpeople.utils.neo4jApi.parsing.StatementsContainer;
 
 import javax.json.stream.JsonParser;
 
@@ -14,7 +14,7 @@ public class MainState implements State {
     NAMES readErrors = NAMES.READ_ERRORS;
 
     @Override
-    public NAMES process(JsonParser parser, StatementResult statementResult) {
+    public NAMES process(JsonParser parser, StatementsContainer statementsContainer) {
 
         JsonParser.Event event = parser.next();
 

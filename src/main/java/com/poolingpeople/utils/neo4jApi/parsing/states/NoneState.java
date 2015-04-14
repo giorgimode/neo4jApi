@@ -1,7 +1,7 @@
 package com.poolingpeople.utils.neo4jApi.parsing.states;
 
-import com.poolingpeople.utils.neo4jApi.parsing.StatementResult;
 import com.poolingpeople.utils.neo4jApi.parsing.State;
+import com.poolingpeople.utils.neo4jApi.parsing.StatementsContainer;
 
 import javax.json.stream.JsonParser;
 
@@ -10,7 +10,7 @@ import javax.json.stream.JsonParser;
  */
 public class NoneState implements State {
     @Override
-    public NAMES process(JsonParser parser, StatementResult statementResult) {
+    public NAMES process(JsonParser parser, StatementsContainer statementsContainer) {
        throw new RuntimeException("nothing to process on state NONE");
     }
 

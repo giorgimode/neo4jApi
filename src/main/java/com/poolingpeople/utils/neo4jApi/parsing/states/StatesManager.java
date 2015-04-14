@@ -1,8 +1,8 @@
 package com.poolingpeople.utils.neo4jApi.parsing.states;
 
 import com.poolingpeople.utils.neo4jApi.parsing.JsonValueReader;
-import com.poolingpeople.utils.neo4jApi.parsing.StatementResult;
 import com.poolingpeople.utils.neo4jApi.parsing.State;
+import com.poolingpeople.utils.neo4jApi.parsing.StatementsContainer;
 
 import javax.json.Json;
 import javax.json.stream.JsonParser;
@@ -52,28 +52,29 @@ public class StatesManager {
         states.put(State.NAMES.NONE, new NoneState());
     }
 
-    public StatementResult parse(InputStream inputStream){
+    public StatementsContainer parse(InputStream inputStream){
 
         JsonParser parser = Json.createParser(inputStream);
         State currentState = states.get(State.NAMES.MAIN_STATE);
-        StatementResult statementResult = new StatementResult();
+        StatementsContainer statementContainer = new StatementsContainer();
 
         State.NAMES lastState = null;
 
         while (currentState.getName() != State.NAMES.NONE) {
+
             logger.finer("on state " + currentState.getClass().getSimpleName());
             lastState = currentState.getName();
-            currentState = states.get(currentState.process(parser, statementResult));
+            currentState = states.get(currentState.process(parser, statementContainer));
 
             if(currentState == null){
                 throw new RuntimeException("state not found" + lastState);
             }
         }
 
-        return statementResult;
+        return statementContainer;
     }
 
-    public StatementResult parse(String json) {
+    public StatementsContainer parse(String json) {
         return parse(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)));
     }
 
