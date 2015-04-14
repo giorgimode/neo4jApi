@@ -1,8 +1,6 @@
 package com.poolingpeople.utils.neo4jApi;
 
 
-import com.poolingpeople.utils.neo4jApi.parsing.CypherQueryProperties;
-
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;

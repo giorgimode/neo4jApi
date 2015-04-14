@@ -1,14 +1,11 @@
 package com.poolingpeople.utils.neo4jApi;
 
-import com.poolingpeople.utils.neo4jApi.parsing.CypherQueryProperties;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.json.JsonObject;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;

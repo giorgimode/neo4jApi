@@ -1,6 +1,5 @@
 package com.poolingpeople.utils.neo4jApi;
 
-import com.poolingpeople.utils.neo4jApi.parsing.CypherQueryProperties;
 import com.poolingpeople.utils.neo4jApi.parsing.states.StatesManager;
 import org.junit.Before;
 import org.junit.Test;

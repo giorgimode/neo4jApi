@@ -1,7 +1,6 @@
-package com.poolingpeople.utils.neo4jApi.parsing;
+package com.poolingpeople.utils.neo4jApi;
 
 import java.util.HashMap;
-import java.util.InvalidPropertiesFormatException;
 import java.util.Map;
 
 /**
@@ -11,12 +10,17 @@ public class CypherQueryProperties {
 
     Map<String, Map<String, Object>> properties = new HashMap<>();
     Mode mode = Mode.COLLECTION;
+    public static final String defaultKey = "individual_default";
 
     public CypherQueryProperties(Mode mode) {
         this.mode = mode;
+        if(mode == Mode.INDIVIDUAL){
+            addId(defaultKey);
+        }
     }
 
     public CypherQueryProperties() {
+        this(Mode.INDIVIDUAL);
     }
 
     public static enum Mode{
@@ -72,8 +76,31 @@ public class CypherQueryProperties {
         return this;
     }
 
+    public CypherQueryProperties add(Map<String, Object> props){
+
+        if(mode != Mode.INDIVIDUAL)
+            throw new Neo4jException("This method is allowed only for INDIVIDUAL params");
+
+        properties.get(defaultKey).putAll(props);
+        return this;
+    }
+
+    public CypherQueryProperties add(String key, Object value){
+
+        if(mode != Mode.INDIVIDUAL)
+            throw new Neo4jException("This method is allowed only for INDIVIDUAL params");
+
+        properties.get(defaultKey).put(key, value);
+        return this;
+    }
+
     private void addId(String key){
         if(!properties.containsKey(key)){
+
+            if(properties.containsKey(defaultKey)){
+                properties.remove(defaultKey);
+            }
+
             if(properties.size() > 0 && mode == Mode.INDIVIDUAL){
                 throw new RuntimeException("Only one properties map allowed. Using individual mode");
             }
