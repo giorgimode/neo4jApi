@@ -26,9 +26,9 @@ public class StatesManagerUT {
         InputStream stream = this.getClass().getClassLoader().getResourceAsStream("TransactionalResponse.json");
 
         StatesManager statesManager = new StatesManager();
-        ResultContainer resultContainer = statesManager.parse(stream);
+        StatementResult statementResult = statesManager.parse(stream);
 
-        Collection<Map<String, Map<String, Object>>> result = resultContainer.getResultMixed();
+        Collection<Map<String, Map<String, Object>>> result = statementResult.getResultMixed();
 
         assertEquals(5, result.size());
 
@@ -47,9 +47,9 @@ public class StatesManagerUT {
         InputStream stream = this.getClass().getClassLoader().getResourceAsStream("TxResponseError.json");
 
         StatesManager statesManager = new StatesManager();
-        ResultContainer resultContainer = statesManager.parse(stream);
+        StatementResult statementResult = statesManager.parse(stream);
 
-        ResultContainer.Error result = resultContainer.getError();
+        StatementResult.Error result = statementResult.getError();
 
         assertThat(result.getCode(), is("Neo.ClientError.Statement.InvalidSyntax"));
         assertThat(result.getMessage(), is("Invalid input ' ': expected 'm/M' or 't/T' (line 1, column 11)\n\"match n re turn n limit 10\"\n           ^"));

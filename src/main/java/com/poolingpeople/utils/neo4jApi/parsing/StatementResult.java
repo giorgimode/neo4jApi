@@ -5,10 +5,10 @@ import java.util.*;
 /**
  * Created by alacambra on 1/17/15.
  */
-public class ResultContainer {
+public class StatementResult {
     List<String> columns = new ArrayList<>();
 
-    //all-rows/column-name/column-key-value
+    //all-rows/column-name/column-(key-value)
     Collection<Map<String,Map<String,Object>>> resultMixed = new HashSet<>();
 
     Integer currentColumnIndex;

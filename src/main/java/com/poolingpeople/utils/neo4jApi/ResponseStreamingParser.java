@@ -1,16 +1,13 @@
 package com.poolingpeople.utils.neo4jApi;
 
-import com.poolingpeople.utils.neo4jApi.parsing.ResultContainer;
+import com.poolingpeople.utils.neo4jApi.parsing.StatementResult;
 import com.poolingpeople.utils.neo4jApi.parsing.states.StatesManager;
 
 import javax.inject.Inject;
 import javax.json.*;
-import javax.json.stream.JsonParser;
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -35,13 +32,13 @@ public class ResponseStreamingParser {
 
     public List<Map<String,Object>> parseList(InputStream inputStream) {
 
-        ResultContainer resultContainer = statesManager.parse(inputStream);
+        StatementResult statementResult = statesManager.parse(inputStream);
 
-        if(resultContainer.getError() != null){
-            throw parseException(resultContainer);
+        if(statementResult.getError() != null){
+            throw parseException(statementResult);
         }
 
-        Collection<Map<String, Map<String, Object>>> r = resultContainer.getResultMixed();
+        Collection<Map<String, Map<String, Object>>> r = statementResult.getResultMixed();
         List<Map<String,Object>> result = new ArrayList<>();
 
         for(Map<String, Map<String, Object>> row : r){
@@ -87,12 +84,12 @@ public class ResponseStreamingParser {
 
     public Collection<Map<String,Map<String,Object>>> parse(String json) {
 
-        ResultContainer resultContainer = statesManager.parse(json);
+        StatementResult statementResult = statesManager.parse(json);
 
-        if(resultContainer.getError() != null){
-            throw parseException(resultContainer);
+        if(statementResult.getError() != null){
+            throw parseException(statementResult);
         } else {
-            return resultContainer.getResultMixed();
+            return statementResult.getResultMixed();
         }
     }
 
@@ -101,12 +98,12 @@ public class ResponseStreamingParser {
     }
 
     private Neo4jClientErrorException parseException(Response response){
-        ResultContainer.Error error = statesManager.parse(response.readEntity(InputStream.class)).getError();
+        StatementResult.Error error = statesManager.parse(response.readEntity(InputStream.class)).getError();
         return new Neo4jClientErrorException(error.getMessage(), error.getCode(), error.getCode());
     }
 
-    private Neo4jClientErrorException parseException(ResultContainer resultContainer){
-        ResultContainer.Error error = resultContainer.getError();
+    private Neo4jClientErrorException parseException(StatementResult statementResult){
+        StatementResult.Error error = statementResult.getError();
         return new Neo4jClientErrorException(error.getMessage(), error.getCode(), error.getCode());
     }
 

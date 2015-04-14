@@ -1,11 +1,8 @@
 package com.poolingpeople.utils.neo4jApi.parsing.states;
 
-import com.poolingpeople.utils.neo4jApi.parsing.ResultContainer;
+import com.poolingpeople.utils.neo4jApi.parsing.StatementResult;
 import com.poolingpeople.utils.neo4jApi.parsing.State;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 import javax.json.stream.JsonParser;
 
 /**
@@ -17,7 +14,7 @@ public class ReadErrors implements State{
     NAMES  mainState = NAMES.MAIN_STATE;
 
     @Override
-    public NAMES process(JsonParser parser, ResultContainer resultContainer) {
+    public NAMES process(JsonParser parser, StatementResult statementResult) {
 
         JsonParser.Event event = parser.next();
 
@@ -26,7 +23,7 @@ public class ReadErrors implements State{
         }
 
         if(event == JsonParser.Event.START_OBJECT){
-            resultContainer.startError();
+            statementResult.startError();
             return readError;
         }
 

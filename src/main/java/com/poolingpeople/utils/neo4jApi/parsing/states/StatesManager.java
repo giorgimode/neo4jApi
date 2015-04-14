@@ -1,7 +1,7 @@
 package com.poolingpeople.utils.neo4jApi.parsing.states;
 
 import com.poolingpeople.utils.neo4jApi.parsing.JsonValueReader;
-import com.poolingpeople.utils.neo4jApi.parsing.ResultContainer;
+import com.poolingpeople.utils.neo4jApi.parsing.StatementResult;
 import com.poolingpeople.utils.neo4jApi.parsing.State;
 
 import javax.json.Json;
@@ -52,28 +52,28 @@ public class StatesManager {
         states.put(State.NAMES.NONE, new NoneState());
     }
 
-    public ResultContainer parse(InputStream inputStream){
+    public StatementResult parse(InputStream inputStream){
 
         JsonParser parser = Json.createParser(inputStream);
         State currentState = states.get(State.NAMES.MAIN_STATE);
-        ResultContainer resultContainer = new ResultContainer();
+        StatementResult statementResult = new StatementResult();
 
         State.NAMES lastState = null;
 
         while (currentState.getName() != State.NAMES.NONE) {
             logger.finer("on state " + currentState.getClass().getSimpleName());
             lastState = currentState.getName();
-            currentState = states.get(currentState.process(parser, resultContainer));
+            currentState = states.get(currentState.process(parser, statementResult));
 
             if(currentState == null){
                 throw new RuntimeException("state not found" + lastState);
             }
         }
 
-        return resultContainer;
+        return statementResult;
     }
 
-    public ResultContainer parse(String json) {
+    public StatementResult parse(String json) {
         return parse(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)));
     }
 

@@ -27,10 +27,10 @@ public interface State {
      * Map<String, Object> is the value of a column. It can be a json object or just a value.
      * If it is a value the key is the column name
      * @param parser
-     * @param resultContainer
+     * @param statementResult
      * @return
      */
-    public NAMES process(JsonParser parser ,ResultContainer resultContainer);
+    public NAMES process(JsonParser parser ,StatementResult statementResult);
     public NAMES getName();
 
 
