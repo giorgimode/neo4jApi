@@ -59,7 +59,7 @@
         {
             "columns":[
                 "n.email",
-                "email"
+                "state"
             ],
             "data":[
                 {

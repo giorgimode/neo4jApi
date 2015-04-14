@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
@@ -45,18 +46,39 @@ public class StatesManagerUT {
     }
 
     @Test
+    public void testParseMultipleStatements() throws Exception {
+
+        InputStream stream = this.getClass().getClassLoader().getResourceAsStream("multistatement-response.json");
+
+        StatesManager statesManager = new StatesManager();
+
+        List<StatementResult> statementResults =  statesManager.parse(stream).getStatementResults();
+
+        assertThat(statementResults.size(), is(2));
+        assertThat(statementResults.get(0).getResultMixed().size(), is(5));
+        assertThat(statementResults.get(1).getResultMixed().size(), is(2));
+
+        for(Map<String, Map<String, Object>> r : statementResults.get(1).getResultMixed()){
+
+            assertTrue(r.get("n.email").get("n.email")
+                    .equals("sebastian.baum@ion2s.com") || r.get("n.email").get("n.email")
+                    .equals("arne.cornelius@ion2s.com"));
+
+            assertTrue(r.get("state").get("state").equals("COMPLETED"));
+        }
+
+    }
+
+    @Test
     public void testParseError() throws Exception {
 
         InputStream stream = this.getClass().getClassLoader().getResourceAsStream("TxResponseError.json");
 
         StatesManager statesManager = new StatesManager();
-        StatementResult statementResult = statesManager
-                .parse(stream)
-                .getSingleStatement()
-                .orElse(new StatementResult());
 
+        StatementsContainer statementsContainer = statesManager.parse(stream);
 
-        StatementResult.Error result = statementResult.getError();
+        StatementsContainer.Error result = statementsContainer.getError();
 
         assertThat(result.getCode(), is("Neo.ClientError.Statement.InvalidSyntax"));
         assertThat(result.getMessage(), is("Invalid input ' ': expected 'm/M' or 't/T' (line 1, column 11)\n\"match n re turn n limit 10\"\n           ^"));

@@ -1,7 +1,7 @@
 package com.poolingpeople.utils.neo4jApi.parsing;
 
 import java.util.*;
-
+import com.poolingpeople.utils.neo4jApi.parsing.StatementsContainer.Error;
 /**
  * Created by alacambra on 1/17/15.
  */
@@ -16,6 +16,9 @@ public class StatementResult {
     Map<String,Object> currentColumnValue;
     Error error;
 
+    public void setError(Error error) {
+        this.error = error;
+    }
 
     public void addColumnName(String columnName){
         columns.add(columnName);
@@ -55,43 +58,8 @@ public class StatementResult {
         currentColumnIndex++;
     }
 
-    public Error startError(){
-        error = new Error();
-        return error;
-    }
-
     public Error getError() {
         return error;
     }
-
-    public class Error{
-        String code = "";
-        String message = "";
-
-        public void addParam(String key, String value){
-
-            if(key.equals("code")) code = value;
-
-            else if(key.equals("message")) message = value;
-
-            else{
-                throw new RuntimeException("key " + key + " not valid");
-            }
-        }
-
-        public String getCode() {
-            return code;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        @Override
-        public String toString() {
-            return code + ":" + message;
-        }
-    }
-
 }
 

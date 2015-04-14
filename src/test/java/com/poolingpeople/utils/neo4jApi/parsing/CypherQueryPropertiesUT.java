@@ -16,7 +16,7 @@ public class CypherQueryPropertiesUT {
 
     @Before
     public void setUp(){
-        cut = new CypherQueryProperties();
+        cut = new CypherQueryProperties().setMode(CypherQueryProperties.Mode.COLLECTION);
     }
 
     @Test

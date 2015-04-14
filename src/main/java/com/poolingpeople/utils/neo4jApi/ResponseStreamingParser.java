@@ -1,6 +1,7 @@
 package com.poolingpeople.utils.neo4jApi;
 
 import com.poolingpeople.utils.neo4jApi.parsing.StatementResult;
+import com.poolingpeople.utils.neo4jApi.parsing.StatementsContainer;
 import com.poolingpeople.utils.neo4jApi.parsing.states.StatesManager;
 
 import javax.inject.Inject;
@@ -110,7 +111,7 @@ public class ResponseStreamingParser {
 
     private Neo4jClientErrorException parseException(Response response){
 
-        StatementResult.Error error =
+        StatementsContainer.Error error =
                 statesManager
                 .parse(response.readEntity(InputStream.class))
                 .getSingleStatement()
@@ -120,7 +121,7 @@ public class ResponseStreamingParser {
     }
 
     private Neo4jClientErrorException parseException(StatementResult statementResult){
-        StatementResult.Error error = statementResult.getError();
+        StatementsContainer.Error error = statementResult.getError();
         return new Neo4jClientErrorException(error.getMessage(), error.getCode(), error.getCode());
     }
 

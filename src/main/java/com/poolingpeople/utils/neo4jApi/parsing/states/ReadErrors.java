@@ -24,7 +24,7 @@ public class ReadErrors implements State{
         }
 
         if(event == JsonParser.Event.START_OBJECT){
-            statementsContainer.getCurrent().startError();
+            statementsContainer.startError();
             return readError;
         }
 

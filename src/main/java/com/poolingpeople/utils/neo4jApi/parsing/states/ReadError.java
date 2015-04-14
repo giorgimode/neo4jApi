@@ -25,7 +25,7 @@ public class ReadError implements State{
         if(event == JsonParser.Event.KEY_NAME){
             String key = parser.getString();
             parser.next();
-            statementsContainer.getCurrent().getError().addParam(key, parser.getString());
+            statementsContainer.getError().addParam(key, parser.getString());
             return this.getName();
         }
 
