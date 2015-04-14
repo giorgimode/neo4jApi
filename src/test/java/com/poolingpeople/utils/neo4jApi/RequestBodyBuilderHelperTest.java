@@ -34,7 +34,7 @@ public class RequestBodyBuilderHelperTest {
     public void testGetCypherBodyWithParams() throws Exception {
 
         String query = "CREATE (n:a{props}) return count(n) as total";
-        CypherQueryProperties params = new CypherQueryProperties().add("props", "start", 5);
+        CypherQueryProperties params = new CypherQueryProperties().setMode(CypherQueryProperties.Mode.COLLECTION).add("props", "start", 5);
         JsonObject object = cut.getCypherBody(query, params);
 
         String expected = "{\"statements\":[{\"statement\":\"CREATE (n:a{props}) return count(n) as total\",\"parameters\":{\"props\":{\"start\":5}}}]}";
@@ -45,7 +45,7 @@ public class RequestBodyBuilderHelperTest {
     public void testGetCypherBodyWithParamsContainingNulls() throws Exception {
 
         String query = "MATCH (n) SET n.start = {start}, n.end = {end} RETURN count(n) as total";
-        CypherQueryProperties params = new CypherQueryProperties()
+        CypherQueryProperties params = new CypherQueryProperties().setMode(CypherQueryProperties.Mode.COLLECTION)
                 .add("props", "start", 5)
                 .add("props", "end", null);
         JsonObject object = cut.getCypherBody(query, params);
@@ -58,7 +58,7 @@ public class RequestBodyBuilderHelperTest {
     public void testGetCypherBodyWithMultiParams_create_multiprop_collection_mode() throws Exception {
 
         String query = "CREATE (n:c{propsA}), (m:c{propsB}) return count(n) as total";
-        CypherQueryProperties params = new CypherQueryProperties().add("propsA", "start", 5).add("propsB", "end", 5);
+        CypherQueryProperties params = new CypherQueryProperties().setMode(CypherQueryProperties.Mode.COLLECTION).add("propsA", "start", 5).add("propsB", "end", 5);
         JsonObject object = cut.getCypherBody(query, params);
 
         String expected = "{\"statements\":[{\"statement\":\"CREATE (n:c{propsA}), (m:c{propsB}) return count(n) as total\"," +
@@ -108,7 +108,7 @@ public class RequestBodyBuilderHelperTest {
     public void testGetCypherBodyWithMultiParams_create() throws Exception {
 
         String query = "CREATE (n:c{propsA}), (m:c{propsB}) return count(n) as total";
-        CypherQueryProperties params = new CypherQueryProperties().add("propsA", "start", 5).add("propsB", "end", 5);
+        CypherQueryProperties params = new CypherQueryProperties().setMode(CypherQueryProperties.Mode.COLLECTION).add("propsA", "start", 5).add("propsB", "end", 5);
         JsonObject object = cut.getCypherBody(query, params);
 
         String expected = "{\"statements\":[{\"statement\":\"CREATE (n:c{propsA}), (m:c{propsB}) return count(n) as total\"," +
@@ -124,7 +124,7 @@ public class RequestBodyBuilderHelperTest {
     public void testGetCypherBodyWithMultiParams_match(){
 
         String query = "match (n:c{start: {propsA}.start})-[:rel]->(m:c{end: {propsB}.end}) return n, m";
-        CypherQueryProperties params = new CypherQueryProperties().add("propsA", "start", 5).add("propsB", "end", 5);
+        CypherQueryProperties params = new CypherQueryProperties().setMode(CypherQueryProperties.Mode.COLLECTION).add("propsA", "start", 5).add("propsB", "end", 5);
         JsonObject object = cut.getCypherBody(query, params);
 
         String expected = "{\"statements\":[{\"statement\":\"match (n:c{start: {propsA}.start})-[:rel]->(m:c{end: {propsB}.end}) return n, m\"," +
