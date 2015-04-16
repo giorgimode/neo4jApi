@@ -1,4 +1,4 @@
-package com.poolingpeople.utils.neo4jApi.control;
+package com.poolingpeople.utils.neo4jApi.boundary;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;

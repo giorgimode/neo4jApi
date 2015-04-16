@@ -1,6 +1,8 @@
-package com.poolingpeople.utils.neo4jApi.control;
+package com.poolingpeople.utils.neo4jApi.boundary;
 
+import com.poolingpeople.utils.neo4jApi.boundary.MultiStatementBuilder;
 import com.poolingpeople.utils.neo4jApi.boundary.QueryParams;
+import com.poolingpeople.utils.neo4jApi.control.StatementBuilder;
 import org.junit.Before;
 import org.junit.Test;
 

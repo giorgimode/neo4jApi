@@ -1,6 +1,6 @@
 package com.poolingpeople.utils.neo4jApi.control.parsing;
 
-import com.poolingpeople.utils.neo4jApi.boundary.Neo4jAdapterException;
+import com.poolingpeople.utils.neo4jApi.boundary.Neo4jClientException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public class StatementsResultContainer {
     public Optional<StatementResult> getSingleStatement(){
 
         if(statementResults.size() > 1){
-            throw new Neo4jAdapterException("More than one available statement result");
+            throw new Neo4jClientException("More than one available statement result");
         } else if(statementResults.size() == 1){
             statementResults.get(0).setError(error);
         }

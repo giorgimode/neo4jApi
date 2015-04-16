@@ -9,7 +9,7 @@ public class StatementResult {
     List<String> columns = new ArrayList<>();
 
     //all-rows/column-name/column-(key-value)
-    Collection<Map<String,Map<String,Object>>> resultMixed = new HashSet<>();
+    List<Map<String,Map<String,Object>>> resultMixed = new ArrayList<>();
 
     Integer currentColumnIndex;
     Map<String,Map<String,Object>> currentRow;
@@ -24,7 +24,7 @@ public class StatementResult {
         columns.add(columnName);
     }
 
-    public Collection<Map<String, Map<String, Object>>> getResultMixed() {
+    public List<Map<String, Map<String, Object>>> getResultMixed() {
         return resultMixed;
     }
 

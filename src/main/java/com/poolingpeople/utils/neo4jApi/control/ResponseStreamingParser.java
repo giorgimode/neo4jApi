@@ -45,7 +45,7 @@ public class ResponseStreamingParser {
             throw parseException(statementResult);
         }
 
-        Collection<Map<String, Map<String, Object>>> r = statementResult.getResultMixed();
+        List<Map<String, Map<String, Object>>> r = statementResult.getResultMixed();
         List<Map<String,Object>> result = new ArrayList<>();
 
         for(Map<String, Map<String, Object>> row : r){
@@ -75,7 +75,7 @@ public class ResponseStreamingParser {
         }
     }
 
-    public Collection<Map<String,Map<String,Object>>> parseOrException(Response response){
+    public List<Map<String,Map<String,Object>>> parseOrException(Response response){
 
         Response.Status.Family codeFamily = response.getStatusInfo().getFamily();
 
@@ -89,7 +89,7 @@ public class ResponseStreamingParser {
         }
     }
 
-    public Collection<Map<String,Map<String,Object>>> parse(String json) {
+    public List<Map<String,Map<String,Object>>> parse(String json) {
 
         StatementResult statementResult =
                 statesManager
@@ -102,13 +102,6 @@ public class ResponseStreamingParser {
         } else {
             return statementResult.getResultMixed();
         }
-    }
-
-    public Collection<Map<String,Map<String,Object>>> parse(InputStream inputStream){
-        return statesManager
-                        .parse(inputStream)
-                        .getSingleStatement()
-                        .orElse(new StatementResult()).getResultMixed();
     }
 
     private Neo4jClientErrorException parseException(Response response){
@@ -125,29 +118,5 @@ public class ResponseStreamingParser {
     private Neo4jClientErrorException parseException(StatementResult statementResult){
         StatementsResultContainer.Error error = statementResult.getError();
         return new Neo4jClientErrorException(error.getMessage(), error.getCode(), error.getCode());
-    }
-
-    private Object getObjectFromJsonValue(JsonValue value){
-
-        switch (value.getValueType()){
-
-            case STRING:
-                return ((JsonString) value).getString();
-
-            case NUMBER:
-                if (((JsonNumber) value).isIntegral()) {
-                    return ((JsonNumber) value).longValue();     // or other methods to get integral value
-                } else {
-                    return ((JsonNumber) value).doubleValue();   // or other methods to get decimal number value
-                }
-            case TRUE:
-                return true;
-            case FALSE:
-                return false;
-            case NULL:
-                return null;
-            default:
-                throw new RuntimeException("Type for " + value.getValueType() + " not found.");
-        }
     }
 }
