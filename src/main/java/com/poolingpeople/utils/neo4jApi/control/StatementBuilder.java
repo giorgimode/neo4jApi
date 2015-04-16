@@ -1,5 +1,7 @@
 package com.poolingpeople.utils.neo4jApi.control;
 
+import com.poolingpeople.utils.neo4jApi.boundary.HasQueryParams;
+import com.poolingpeople.utils.neo4jApi.boundary.QueryCollectionParam;
 import com.poolingpeople.utils.neo4jApi.boundary.QueryParams;
 
 import javax.json.Json;
@@ -35,12 +37,13 @@ public class StatementBuilder {
      * @return
      */
 
-    public JsonObject getCypherBody(String query, QueryParams properties) {
-        return properties.getMode() == QueryParams.Mode.COLLECTION ?
-                getStatementCollectionParams(query, properties) : getStatementIndividualParams(query, properties);
+    public JsonObject getCypherBody(String query, HasQueryParams properties) {
+        return properties instanceof QueryCollectionParam ?
+                getStatementCollectionParams(query, (QueryCollectionParam) properties) :
+                getStatementIndividualParams(query, (QueryParams) properties);
     }
 
-    public JsonObject getStatementCollectionParams(String query, QueryParams properties) {
+    public JsonObject getStatementCollectionParams(String query, QueryCollectionParam properties) {
 
         JsonObjectBuilder propertiesBuilder = Json.createObjectBuilder();
 
@@ -83,7 +86,7 @@ public class StatementBuilder {
 
 
         JsonObjectBuilder propsBuilder = Json.createObjectBuilder();
-        Map<String, Object> params = properties.getParams().values().iterator().next();
+        Map<String, Object> params = properties.getParams();
 
         if (params != null)
             for (Map.Entry<String, Object> param : params.entrySet()) {

@@ -40,25 +40,25 @@ public class Neo4jRestApiAdapter {
         this.endpoint = endpoint;
     }
 
-    public List<Map<String, Object>> runParametrizedCypherQuery(String query, QueryParams params) {
+    public List<Map<String, Object>> runParametrizedCypherQuery(String query, QueryCollectionParam params) {
         this.logger.log(Level.FINE, "Neo4j request with cypher query: " + query);
         Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query,params)));
         return responseParser.parseSimpleListOrException(response);
     }
-    
+
     public List<Map<String, Object>> runParametrizedCypherQuery(String query, Map<String, Object> params) {
         this.logger.log(Level.FINE, "Neo4j request with cypher query: " + query);
 
         return runParametrizedCypherQuery(query,
-                new QueryParams(QueryParams.Mode.INDIVIDUAL).add("id", params));
+                new QueryCollectionParam(QueryCollectionParam.Mode.INDIVIDUAL).add("id", params));
     }
 
     @Deprecated
     public List<Map<String, Object>> runParametrizedCypherQuery(String query) {
         return runParametrizedCypherQuery(query, new HashMap<>());
     }
-    
-    public Collection<Map<String, Map<String, Object>>> runCypherQuery(String query, QueryParams params) {
+
+    public Collection<Map<String, Map<String, Object>>> runCypherQuery(String query, QueryCollectionParam params) {
         this.logger.log(Level.FINE, "Neo4j request with cypher query: " + query);
         Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query,params)));
         return responseParser.parseOrException(response);
@@ -67,10 +67,10 @@ public class Neo4jRestApiAdapter {
     public Collection<Map<String, Map<String, Object>>> runCypherQuery(String query, Map<String, Object> params) {
 
         this.logger.log(Level.FINE, "Neo4j request with cypher query: " + query);
-        return runCypherQuery(query, new QueryParams(QueryParams.Mode.INDIVIDUAL).add("id", params));
+        return runCypherQuery(query, new QueryCollectionParam(QueryCollectionParam.Mode.INDIVIDUAL).add("id", params));
     }
 
-    public Map<String, Object> getParametrizedSingleResult(String query, QueryParams params){
+    public Map<String, Object> getParametrizedSingleResult(String query, QueryCollectionParam params){
 
         List<Map<String, Object>> r = runParametrizedCypherQuery(query, params);
 
@@ -81,7 +81,7 @@ public class Neo4jRestApiAdapter {
         return r.get(0);
     }
 
-    public Map<String, Map<String, Object>> getSingleResult(String query, QueryParams params){
+    public Map<String, Map<String, Object>> getSingleResult(String query, QueryCollectionParam params){
 
         Collection<Map<String, Map<String, Object>>> r = runCypherQuery(query, params);
 
@@ -107,28 +107,28 @@ public class Neo4jRestApiAdapter {
         return new ArrayList<>();
     }
 
-    @Deprecated
-    public void createIndex(String label, String property) {
-        String query = "CREATE INDEX ON :" + label + "(" + property + ")";
-        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, new HashMap<String, Object>())));
-    }
-
-    @Deprecated
-    public void dropIndex(String label, String property) {
-        String query = "DROP INDEX ON :" + label + "(" + property + ")";
-        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, new HashMap<String, Object>())));
-    }
-
-    @Deprecated
-    public void createConstraint(String label, String property) {
-        String query = "CREATE CONSTRAINT ON (a:" + label + ") ASSERT a." + property + " IS UNIQUE";
-        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, new HashMap<String, Object>())));    }
-
-    @Deprecated
-    public void dropConstraint(String label, String property) {
-        String query = "DROP CONSTRAINT ON (a:" + label + ") ASSERT a." + property + " IS UNIQUE";
-        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, new HashMap<String, Object>())));
-    }
+//    @Deprecated
+//    public void createIndex(String label, String property) {
+//        String query = "CREATE INDEX ON :" + label + "(" + property + ")";
+//        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, new HashMap<String, Object>())));
+//    }
+//
+//    @Deprecated
+//    public void dropIndex(String label, String property) {
+//        String query = "DROP INDEX ON :" + label + "(" + property + ")";
+//        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, new HashMap<String, Object>())));
+//    }
+//
+//    @Deprecated
+//    public void createConstraint(String label, String property) {
+//        String query = "CREATE CONSTRAINT ON (a:" + label + ") ASSERT a." + property + " IS UNIQUE";
+//        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, new HashMap<String, Object>())));    }
+//
+//    @Deprecated
+//    public void dropConstraint(String label, String property) {
+//        String query = "DROP CONSTRAINT ON (a:" + label + ") ASSERT a." + property + " IS UNIQUE";
+//        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, new HashMap<String, Object>())));
+//    }
 
     private javax.ws.rs.client.Invocation.Builder getCypherBuilder(){
         Client client = ClientBuilder.newClient();

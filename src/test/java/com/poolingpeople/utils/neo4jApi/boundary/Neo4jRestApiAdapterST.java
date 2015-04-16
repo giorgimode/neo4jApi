@@ -28,7 +28,7 @@ public class Neo4jRestApiAdapterST {
         cut.responseParser = new ResponseStreamingParser(new StatesManager());
         cut.runCypherQuery("MATCH (n)\n" +
                 "OPTIONAL MATCH (n)-[r]-()\n" +
-                "DELETE n,r", new QueryParams());
+                "DELETE n,r", new QueryCollectionParam());
     }
 
     private String createQuery(){
@@ -41,7 +41,7 @@ public class Neo4jRestApiAdapterST {
     public void testCreateQuery(){
 
         Collection<Map<String, Map<String, Object>>> r = cut.runCypherQuery(createQuery(),
-                new QueryParams().forId("props").add("start", 1).add("end", 2).done("period", 7)
+                new QueryCollectionParam().forId("props").add("start", 1).add("end", 2).done("period", 7)
         );
 
         assertThat(r.size(), is(1));
@@ -54,7 +54,7 @@ public class Neo4jRestApiAdapterST {
         try {
 
             Collection<Map<String, Map<String, Object>>> r = cut.runCypherQuery(createQuery(),
-                    new QueryParams().forId("falseProp").add("start", 1).add("end", 2).done("period", 7)
+                    new QueryCollectionParam().forId("falseProp").add("start", 1).add("end", 2).done("period", 7)
             );
 
         }catch (Neo4jClientErrorException e){
@@ -68,7 +68,7 @@ public class Neo4jRestApiAdapterST {
     public void testRunParametrizedCypherQuery() throws Exception {
         String query = "CREATE (n:a{start:{start}, end:{end}}) return count(n) as total";
         List<Map<String, Object>> r =  cut.runParametrizedCypherQuery(query,
-                new QueryParams(QueryParams.Mode.INDIVIDUAL)
+                new QueryCollectionParam(QueryCollectionParam.Mode.INDIVIDUAL)
                         .forId("id").add("start", 0).done("end", 1));
 
         assertEquals(r.size(), 1);
@@ -76,7 +76,7 @@ public class Neo4jRestApiAdapterST {
 
         query = "MATCH (n:a{start:{start}, end:{end}}) return n.start as start, n.end as end";
         r =  cut.runParametrizedCypherQuery(query,
-                new QueryParams(QueryParams.Mode.INDIVIDUAL)
+                new QueryCollectionParam(QueryCollectionParam.Mode.INDIVIDUAL)
                         .forId("id").add("start", 0).done("end", 1));
 
         assertEquals(r.size(), 1);
@@ -87,7 +87,7 @@ public class Neo4jRestApiAdapterST {
 
         query = "MATCH (n:a{start:{start}, end:{end}}) return n.start as start, n.end as end";
         r =  cut.runParametrizedCypherQuery(query,
-                new QueryParams()
+                new QueryCollectionParam()
                         .forId("id").add("start", 0).done("end", 1).getParams().get("id"));
 
         assertEquals(r.size(), 1);
@@ -102,7 +102,7 @@ public class Neo4jRestApiAdapterST {
 
         String query = "CREATE (n:a{start:{start}, end:{end}}) return count(n) as total";
         Collection<Map<String, Map<String, Object>>> r =  cut.runCypherQuery(query,
-                new QueryParams(QueryParams.Mode.INDIVIDUAL)
+                new QueryCollectionParam(QueryCollectionParam.Mode.INDIVIDUAL)
                         .forId("id").add("start", 0).done("end", 1));
 
         assertEquals(r.size(), 1);
@@ -110,7 +110,7 @@ public class Neo4jRestApiAdapterST {
 
         query = "MATCH (n:a{start:{start}, end:{end}}) return n";
         r =  cut.runCypherQuery(query,
-                new QueryParams(QueryParams.Mode.INDIVIDUAL)
+                new QueryCollectionParam(QueryCollectionParam.Mode.INDIVIDUAL)
                         .forId("id").add("start", 0).done("end", 1));
 
         assertEquals(r.size(), 1);
@@ -121,7 +121,7 @@ public class Neo4jRestApiAdapterST {
 
         query = "MATCH (n:a{start:{start}, end:{end}}) return n";
         r =  cut.runCypherQuery(query,
-                new QueryParams()
+                new QueryCollectionParam()
                         .forId("id").add("start", 0).done("end", 1).getParams().get("id"));
 
         assertEquals(r.size(), 1);
@@ -139,7 +139,7 @@ public class Neo4jRestApiAdapterST {
                 "return count(n) + count(m) as total";
 
         List<Map<String, Object>> r =  cut.runParametrizedCypherQuery(query,
-                new QueryParams()
+                new QueryCollectionParam()
                         .forId("first").add("start", 0).done("end", 1)
                         .forId("second").add("start",1).done("end",2));
 
@@ -148,7 +148,7 @@ public class Neo4jRestApiAdapterST {
 
         query = "MATCH (n:a{start:{start}, end:{end}}) return n.start as start, n.end as end";
         Map<String, Object> sr =  cut.getParametrizedSingleResult(query,
-                new QueryParams(QueryParams.Mode.INDIVIDUAL)
+                new QueryCollectionParam(QueryCollectionParam.Mode.INDIVIDUAL)
                         .forId("id").add("start", 0).done("end", 1));
 
         assertTrue(sr.keySet().contains("start"));
@@ -165,7 +165,7 @@ public class Neo4jRestApiAdapterST {
                 "return count(n) + count(m) as total";
 
         List<Map<String, Object>> r =  cut.runParametrizedCypherQuery(query,
-                new QueryParams()
+                new QueryCollectionParam()
                         .forId("first").add("start", 0).done("end", 1)
                         .forId("second").add("start",1).done("end",2));
 
@@ -174,7 +174,7 @@ public class Neo4jRestApiAdapterST {
 
         query = "MATCH (n:a) return n";
         Map<String, Object> sr =  cut.getParametrizedSingleResult(query,
-                new QueryParams(QueryParams.Mode.INDIVIDUAL)
+                new QueryCollectionParam(QueryCollectionParam.Mode.INDIVIDUAL)
                         .forId("id").add("start", 0).done("end", 1));
 
     }
@@ -185,7 +185,7 @@ public class Neo4jRestApiAdapterST {
                 "return count(n) + count(m) as total";
 
         List<Map<String, Object>> r =  cut.runParametrizedCypherQuery(query,
-                new QueryParams()
+                new QueryCollectionParam()
                         .forId("first").add("start", 0).done("end", 1)
                         .forId("second").add("start",1).done("end",2));
 
@@ -194,7 +194,7 @@ public class Neo4jRestApiAdapterST {
 
         query = "MATCH (n:a{start:{start}, end:{end}}) return n";
         Map<String, Map<String, Object>> sr =  cut.getSingleResult(query,
-                new QueryParams(QueryParams.Mode.INDIVIDUAL)
+                new QueryCollectionParam(QueryCollectionParam.Mode.INDIVIDUAL)
                         .forId("id").add("start", 0).done("end", 1));
 
         assertTrue(sr.keySet().contains("n"));
@@ -208,7 +208,7 @@ public class Neo4jRestApiAdapterST {
                 "return count(n) + count(m) as total";
 
         List<Map<String, Object>> r =  cut.runParametrizedCypherQuery(query,
-                new QueryParams()
+                new QueryCollectionParam()
                         .forId("first").add("start", 0).done("end", 1)
                         .forId("second").add("start",1).done("end",2));
 
@@ -217,7 +217,7 @@ public class Neo4jRestApiAdapterST {
 
         query = "MATCH (n:a) return n";
         Map<String, Map<String, Object>> sr =  cut.getSingleResult(query,
-                new QueryParams());
+                new QueryCollectionParam());
     }
 
     @Test

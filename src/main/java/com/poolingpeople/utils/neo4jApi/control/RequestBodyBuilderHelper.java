@@ -1,5 +1,7 @@
 package com.poolingpeople.utils.neo4jApi.control;
 
+import com.poolingpeople.utils.neo4jApi.boundary.HasQueryParams;
+import com.poolingpeople.utils.neo4jApi.boundary.QueryCollectionParam;
 import com.poolingpeople.utils.neo4jApi.boundary.QueryParams;
 
 import javax.json.Json;
@@ -36,16 +38,13 @@ public class RequestBodyBuilderHelper {
      * @return
      */
 
-    public JsonObject getCypherBody(String query, QueryParams properties) {
-        return properties.getMode() == QueryParams.Mode.COLLECTION ?
-                getCypherBodyCollectionParams(query, properties) : getCypherBodyIndividualParams(query, properties);
+    public JsonObject getCypherBody(String query, HasQueryParams properties) {
+        return ( properties instanceof QueryCollectionParam) ?
+                getCypherBodyCollectionParams(query, (QueryCollectionParam) properties)
+                : getCypherBodyIndividualParams(query, (QueryParams) properties);
     }
 
-    public JsonObject getCypherBody(String query, Map<String, Object> properties) {
-        return getCypherBodyIndividualParams(query, properties);
-    }
-
-    public JsonObject getCypherBodyCollectionParams(String query, QueryParams properties) {
+    public JsonObject getCypherBodyCollectionParams(String query, QueryCollectionParam properties) {
 
         JsonObjectBuilder propertiesBuilder = Json.createObjectBuilder();
 
@@ -87,7 +86,9 @@ public class RequestBodyBuilderHelper {
         return bodyBuilder.build();
     }
 
-    public JsonObject getCypherBodyIndividualParams(String query, Map<String, Object> params) {
+    public JsonObject getCypherBodyIndividualParams(String query, QueryParams queryParams) {
+
+        Map<String, Object> params = queryParams.getParams();
 
         JsonObjectBuilder propsBuilder = Json.createObjectBuilder();
 
@@ -119,10 +120,4 @@ public class RequestBodyBuilderHelper {
         return bodyBuilder.build();
     }
 
-    public JsonObject getCypherBodyIndividualParams(String query, QueryParams params) {
-
-        String key = params.getParams().keySet().iterator().next();
-        return getCypherBodyIndividualParams(query, params.getParams().get(key));
-
-    }
 }
