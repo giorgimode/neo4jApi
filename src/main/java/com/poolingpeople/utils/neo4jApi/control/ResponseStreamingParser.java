@@ -2,6 +2,7 @@ package com.poolingpeople.utils.neo4jApi.control;
 
 import com.poolingpeople.utils.neo4jApi.boundary.Neo4jClientErrorException;
 import com.poolingpeople.utils.neo4jApi.boundary.Neo4jException;
+import com.poolingpeople.utils.neo4jApi.boundary.Statement;
 import com.poolingpeople.utils.neo4jApi.control.parsing.StatementResult;
 import com.poolingpeople.utils.neo4jApi.control.parsing.StatementsResultContainer;
 import com.poolingpeople.utils.neo4jApi.control.parsing.states.StatesManager;
@@ -13,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by alacambra on 05.11.14.
@@ -29,80 +31,49 @@ public class ResponseStreamingParser {
         this.statesManager = statesManager;
     }
 
-    public List<Map<String,Object>> parseList(String json) {
-        return parseList(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)));
-    }
-
-    public List<Map<String,Object>> parseList(InputStream inputStream) {
+    public List<Map<String,Map<String,Object>>> parseSimpleStatementOrException(Response response){
 
         StatementResult statementResult =
                 statesManager
-                        .parse(inputStream)
+                        .parse(response.readEntity(String.class))
                         .getSingleStatement()
                         .orElse(new StatementResult());
 
         if(statementResult.getError() != null){
-            throw parseException(statementResult);
-        }
-
-        List<Map<String, Map<String, Object>>> r = statementResult.getResultMixed();
-        List<Map<String,Object>> result = new ArrayList<>();
-
-        for(Map<String, Map<String, Object>> row : r){
-            Map<String, Object> newRow = new HashMap<>();
-            for( Map<String, Object> values : row.values()){
-                for(Map.Entry<String, Object> value: values.entrySet()){
-                    newRow.put(value.getKey(), value.getValue());
-                }
-            }
-            result.add(newRow);
-        }
-
-        return result;
-    }
-
-    public List<Map<String, Object>> parseSimpleListOrException(Response response){
-
-        Response.Status.Family codeFamily = response.getStatusInfo().getFamily();
-
-        switch (codeFamily){
-            case CLIENT_ERROR:
-                throw parseException(response);
-            case SERVER_ERROR:
-                throw new Neo4jException(response, "Neo4j reported 5xx error");
-            default:
-                return parseList(response.readEntity(String.class));
-        }
-    }
-
-    public List<Map<String,Map<String,Object>>> parseOrException(Response response){
-
-        Response.Status.Family codeFamily = response.getStatusInfo().getFamily();
-
-        switch (codeFamily){
-            case CLIENT_ERROR:
-                throw parseException(response);
-            case SERVER_ERROR:
-                throw new Neo4jException(response, "Neo4j reported 5xx error");
-            default:
-                return parse(response.readEntity(String.class));
-        }
-    }
-
-    public List<Map<String,Map<String,Object>>> parse(String json) {
-
-        StatementResult statementResult =
-                statesManager
-                        .parse(json)
-                        .getSingleStatement()
-                        .orElse(new StatementResult());
-
-        if(statementResult.getError() != null){
-            throw parseException(statementResult);
+            throw parseException(statementResult.getError());
         } else {
             return statementResult.getResultMixed();
         }
+
+
+//        Response.Status.Family codeFamily = response.getStatusInfo().getFamily();
+//
+//        switch (codeFamily){
+//            case CLIENT_ERROR:
+//                throw parseException(response);
+//            case SERVER_ERROR:
+//                throw new Neo4jException(response, "Neo4j reported 5xx error");
+//            default:
+//                return parse(response.readEntity(String.class));
+//        }
     }
+
+    public List<List<Map<String,Map<String,Object>>>> parseMultiStatementOrException(Response response){
+
+        StatementsResultContainer resultContainer = statesManager.parse(response.readEntity(String.class));
+
+        if(resultContainer.getError() != null) {
+            throw parseException(resultContainer.getError());
+        }
+
+        List<List<Map<String,Map<String,Object>>>> statements = statesManager
+                        .parse(response.readEntity(String.class))
+                        .getStatementResults()
+                        .stream()
+                        .map(st -> st.getResultMixed()).collect(Collectors.toList());
+
+        return statements;
+   }
 
     private Neo4jClientErrorException parseException(Response response){
 
@@ -115,8 +86,7 @@ public class ResponseStreamingParser {
         return new Neo4jClientErrorException(error.getMessage(), error.getCode(), error.getCode());
     }
 
-    private Neo4jClientErrorException parseException(StatementResult statementResult){
-        StatementsResultContainer.Error error = statementResult.getError();
+    private Neo4jClientErrorException parseException(StatementsResultContainer.Error error){
         return new Neo4jClientErrorException(error.getMessage(), error.getCode(), error.getCode());
     }
 }

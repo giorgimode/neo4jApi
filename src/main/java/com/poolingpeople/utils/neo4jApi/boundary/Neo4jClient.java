@@ -43,18 +43,9 @@ public class Neo4jClient {
     public List<Map<String, Object>> cypherOneColumnQuery(String query, HasQueryParams params){
 
         this.logger.log(Level.FINE, query);
-
         Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, params)));
-
-        List<Map<String,Map<String,Object>>> r = responseParser.parseOrException(response);
-
-        List<Map<String, Object>> res = r.stream().map(c -> {
-            if(c.keySet().size() != 1){
-                throw new InvalidParameterException(c.keySet().size() + " column found");
-            }
-
-            return c.values().stream().findFirst().get();
-        }).collect(Collectors.toList());
+        List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
+        List<Map<String, Object>> res = toOneColumn(r);
 
         return res;
     }
@@ -68,7 +59,7 @@ public class Neo4jClient {
 
         this.logger.log(Level.FINE, query);
         Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, params)));
-        List<Map<String,Map<String,Object>>> res = responseParser.parseOrException(response);
+        List<Map<String,Map<String,Object>>> res = responseParser.parseSimpleStatementOrException(response);
 
         return res;
     }
@@ -80,9 +71,11 @@ public class Neo4jClient {
      */
     public List<Map<String, Object>> cypherParamsQuery(String query, HasQueryParams params){
 
-        this.logger.log(Level.FINE, "Neo4j request with cypher query: " + query);
-        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query,params)));
-        List<Map<String, Object>> res =  responseParser.parseSimpleListOrException(response);
+        this.logger.log(Level.FINE, query);
+
+        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, params)));
+        List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
+        List<Map<String, Object>> res = toParams(r);
 
         return res;
     }
@@ -95,20 +88,10 @@ public class Neo4jClient {
 
         this.logger.log(Level.FINE, query);
         Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, params)));
-        List<Map<String,Map<String,Object>>> r = responseParser.parseOrException(response);
-
-        Map<String, Object> res = r.stream().map(c -> {
-            if(c.keySet().size() != 1){
-                throw new InvalidParameterException(c.keySet().size() + " column found");
-            }
-
-            return c.values().stream().findFirst().get();
-        }).map(entity -> {
-            if (entity.size() > 1) throw new Neo4jException();
-            return entity;
-        }).findFirst().orElse(new HashMap<>());
-
+        List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
+        Map<String, Object> res = toSingleEntity(r);
         return res;
+        
     }
 
     /**
@@ -118,9 +101,100 @@ public class Neo4jClient {
     public Object cypherSinglePropertyQuery(String query, HasQueryParams params){
         this.logger.log(Level.FINE, query);
         Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, params)));
-        List<Map<String,Map<String,Object>>> r = responseParser.parseOrException(response);
+        List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
 
-        Object res = r.stream().map(c -> {
+        Object res = toSingleProperty(r);
+        return res;
+    }
+
+    /**
+     * Rows with maps representing the entity attributes. The entity is only a column.
+     * <i>match (person) return person</i>
+     * @return
+     */
+    public List<List<Map<String, Object>>> cypherOneColumnQuery(MultiStatementBuilder statements){
+
+        Response response = getCypherBuilder().post(Entity.json(multiStatementBuilder.build()));
+        List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
+        return r.stream().map( sts -> toOneColumn(sts)).collect(Collectors.toList());
+    }
+
+    /**
+     * Rows with maps representing columns with maps with the entity attributes. Each column is a different entity.
+     * <i>match (p:person)-[r:owns]->(target:uuid) return person, r, t</i>
+     * @return
+     */
+    public List<List<Map<String, Map<String, Object>>>> cypherMultipleEntityColumnsQuery(MultiStatementBuilder statements){
+        Response response = getCypherBuilder().post(Entity.json(multiStatementBuilder.build()));
+        List<List<Map<String,Map<String,Object>>>> res = responseParser.parseMultiStatementOrException(response);
+        return res;
+    }
+
+    /**
+     * rows representing columns where each column is a single property
+     * <i>match (person) return person.uuid as uuid, person.name as name</i>
+     * @return
+     */
+    public List<List<Map<String, Object>>> cypherParamsQuery(MultiStatementBuilder statements){
+        Response response = getCypherBuilder().post(Entity.json(multiStatementBuilder.build()));
+        List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
+        return r.stream().map( sts -> toParams(sts)).collect(Collectors.toList());
+    }
+
+    /**
+     * Only one row representing the values of the entity
+     * <i>match (person:uuid{uuid:{uuid}}) return person</i>
+     */
+    public List<Map<String, Object>> cypherSingleEntityQuery(MultiStatementBuilder statements){
+        Response response = getCypherBuilder().post(Entity.json(multiStatementBuilder.build()));
+        List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
+        return r.stream().map( sts -> toSingleEntity(sts)).collect(Collectors.toList());
+    }
+
+    /**
+     * Only one row representing the values of the entity
+     * <i>match (person:uuid{uuid:{uuid}}) return person.email as email</i>
+     */
+    public List<Object> cypherSinglePropertyQuery(MultiStatementBuilder statements){
+        Response response = getCypherBuilder().post(Entity.json(multiStatementBuilder.build()));
+        List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
+        return r.stream().map( sts -> toSingleProperty(sts)).collect(Collectors.toList());
+    }
+
+    List<Map<String, Object>> toOneColumn(List<Map<String, Map<String, Object>>> sts){
+        return sts.stream().map(c -> {
+
+            if(c.keySet().size() != 1) throw new InvalidParameterException(c.keySet().size() + " column found");
+            return c.values().stream().findFirst().get();
+
+        }).collect(Collectors.toList());
+    }
+
+    List<Map<String, Object>> toParams(List<Map<String,Map<String,Object>>> sts){
+        return sts.stream().map(c -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.keySet().stream().forEach(k -> map.put(k, c.get(k).get(k)));
+                    return map;
+                }
+        ).collect(Collectors.toList());
+    }
+
+    Map<String, Object> toSingleEntity(List<Map<String,Map<String,Object>>> sts){
+       return sts.stream().map(c -> {
+            if(c.keySet().size() != 1){
+                throw new InvalidParameterException(c.keySet().size() + " column found");
+            }
+
+            return c.values().stream().findFirst().get();
+        }).map(entity -> {
+            if (entity.size() > 1) throw new Neo4jException();
+            return entity;
+        }).findFirst().orElse(new HashMap<>());
+    }
+
+    Object toSingleProperty(List<Map<String, Map<String, Object>>> sts){
+
+        Object obj = sts.stream().map(c -> {
             if(c.keySet().size() != 1){
                 throw new InvalidParameterException(c.keySet().size() + " column found");
             }
@@ -134,64 +208,7 @@ public class Neo4jClient {
 
         }).findFirst().orElse(null);
 
-        return res;
-    }
-
-    /**
-     * Rows with maps representing the entity attributes. The entity is only a column.
-     * <i>match (person) return person</i>
-     * @return
-     */
-    public List<List<Map<String, Object>>> cypherOneColumnQuery(MultiStatementBuilder statements){
-
-        Response response = getCypherBuilder().post(Entity.json(multiStatementBuilder.build()));
-
-        List<Map<String,Map<String,Object>>> r = responseParser.parseOrException(response);
-
-        List<Map<String, Object>> res = r.stream().map(c -> {
-            if(c.keySet().size() != 1){
-                throw new InvalidParameterException(c.keySet().size() + " column found");
-            }
-
-            return c.values().stream().findFirst().get();
-        }).collect(Collectors.toList());
-
-        return null;
-    }
-
-    /**
-     * Rows with maps representing columns with maps with the entity attributes. Each column is a different entity.
-     * <i>match (p:person)-[r:owns]->(target:uuid) return person, r, t</i>
-     * @return
-     */
-    public List<List<Map<String, Map<String, Object>>>> cypherMultipleEntityColumnsQuery(MultiStatementBuilder statements){
-        return null;
-    }
-
-    /**
-     * rows representing columns where each column is a single property
-     * <i>match (person) return person.uuid as uuid, person.name as name</i>
-     * @return
-     */
-    public List<List<Map<String, Object>>> cypherParamsQuery(MultiStatementBuilder statements){
-
-        return null;
-    }
-
-    /**
-     * Only one row representing the values of the entity
-     * <i>match (person:uuid{uuid:{uuid}}) return person</i>
-     */
-    public List<Map<String, Object>> cypherSingleEntityQuery(MultiStatementBuilder statements){
-        return null;
-    }
-
-    /**
-     * Only one row representing the values of the entity
-     * <i>match (person:uuid{uuid:{uuid}}) return person.email as email</i>
-     */
-    public List<Object> cypherSinglePropertyQuery(MultiStatementBuilder statements){
-        return null;
+        return obj;
     }
 
     private javax.ws.rs.client.Invocation.Builder getCypherBuilder(){
