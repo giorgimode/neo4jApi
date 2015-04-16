@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * Created by alacambra on 14.04.15.
  */
-public class StatementsContainer {
+public class StatementsResultContainer {
 
     List<StatementResult> statementResults = new ArrayList<>();
     StatementResult current;

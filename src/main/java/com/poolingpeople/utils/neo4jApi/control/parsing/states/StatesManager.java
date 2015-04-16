@@ -2,7 +2,7 @@ package com.poolingpeople.utils.neo4jApi.control.parsing.states;
 
 import com.poolingpeople.utils.neo4jApi.control.parsing.JsonValueReader;
 import com.poolingpeople.utils.neo4jApi.control.parsing.State;
-import com.poolingpeople.utils.neo4jApi.control.parsing.StatementsContainer;
+import com.poolingpeople.utils.neo4jApi.control.parsing.StatementsResultContainer;
 
 import javax.json.Json;
 import javax.json.stream.JsonParser;
@@ -52,11 +52,11 @@ public class StatesManager {
         states.put(State.NAMES.NONE, new NoneState());
     }
 
-    public StatementsContainer parse(InputStream inputStream){
+    public StatementsResultContainer parse(InputStream inputStream){
 
         JsonParser parser = Json.createParser(inputStream);
         State currentState = states.get(State.NAMES.MAIN_STATE);
-        StatementsContainer statementContainer = new StatementsContainer();
+        StatementsResultContainer statementContainer = new StatementsResultContainer();
 
         State.NAMES lastState = null;
 
@@ -74,7 +74,7 @@ public class StatesManager {
         return statementContainer;
     }
 
-    public StatementsContainer parse(String json) {
+    public StatementsResultContainer parse(String json) {
         return parse(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)));
     }
 

@@ -3,7 +3,7 @@ package com.poolingpeople.utils.neo4jApi.control;
 import com.poolingpeople.utils.neo4jApi.boundary.Neo4jClientErrorException;
 import com.poolingpeople.utils.neo4jApi.boundary.Neo4jException;
 import com.poolingpeople.utils.neo4jApi.control.parsing.StatementResult;
-import com.poolingpeople.utils.neo4jApi.control.parsing.StatementsContainer;
+import com.poolingpeople.utils.neo4jApi.control.parsing.StatementsResultContainer;
 import com.poolingpeople.utils.neo4jApi.control.parsing.states.StatesManager;
 
 import javax.inject.Inject;
@@ -113,7 +113,7 @@ public class ResponseStreamingParser {
 
     private Neo4jClientErrorException parseException(Response response){
 
-        StatementsContainer.Error error =
+        StatementsResultContainer.Error error =
                 statesManager
                 .parse(response.readEntity(InputStream.class))
                 .getSingleStatement()
@@ -123,7 +123,7 @@ public class ResponseStreamingParser {
     }
 
     private Neo4jClientErrorException parseException(StatementResult statementResult){
-        StatementsContainer.Error error = statementResult.getError();
+        StatementsResultContainer.Error error = statementResult.getError();
         return new Neo4jClientErrorException(error.getMessage(), error.getCode(), error.getCode());
     }
 

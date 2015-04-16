@@ -14,9 +14,9 @@ public class StatementResult {
     Integer currentColumnIndex;
     Map<String,Map<String,Object>> currentRow;
     Map<String,Object> currentColumnValue;
-    StatementsContainer.Error error;
+    StatementsResultContainer.Error error;
 
-    public void setError(StatementsContainer.Error error) {
+    public void setError(StatementsResultContainer.Error error) {
         this.error = error;
     }
 
@@ -58,7 +58,7 @@ public class StatementResult {
         currentColumnIndex++;
     }
 
-    public StatementsContainer.Error getError() {
+    public StatementsResultContainer.Error getError() {
         return error;
     }
 }

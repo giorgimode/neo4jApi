@@ -1,7 +1,5 @@
 package com.poolingpeople.utils.neo4jApi.control.parsing;
 
-import com.poolingpeople.utils.neo4jApi.control.parsing.StatementResult;
-import com.poolingpeople.utils.neo4jApi.control.parsing.StatementsContainer;
 import com.poolingpeople.utils.neo4jApi.control.parsing.states.StatesManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,9 +76,9 @@ public class StatesManagerUT {
 
         StatesManager statesManager = new StatesManager();
 
-        StatementsContainer statementsContainer = statesManager.parse(stream);
+        StatementsResultContainer statementsResultContainer = statesManager.parse(stream);
 
-        StatementsContainer.Error result = statementsContainer.getError();
+        StatementsResultContainer.Error result = statementsResultContainer.getError();
 
         assertThat(result.getCode(), is("Neo.ClientError.Statement.InvalidSyntax"));
         assertThat(result.getMessage(), is("Invalid input ' ': expected 'm/M' or 't/T' (line 1, column 11)\n\"match n re turn n limit 10\"\n           ^"));
