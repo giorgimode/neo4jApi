@@ -1,4 +1,4 @@
-package com.poolingpeople.utils.neo4jApi;
+package com.poolingpeople.utils.neo4jApi.boundary;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -34,8 +34,8 @@ public class RequestBodyBuilderHelper {
      * @return
      */
 
-    public JsonObject getCypherBody(String query, CypherQueryProperties properties) {
-        return properties.getMode() == CypherQueryProperties.Mode.COLLECTION ?
+    public JsonObject getCypherBody(String query, QueryParams properties) {
+        return properties.getMode() == QueryParams.Mode.COLLECTION ?
                 getCypherBodyCollectionParams(query, properties) : getCypherBodyIndividualParams(query, properties);
     }
 
@@ -43,12 +43,12 @@ public class RequestBodyBuilderHelper {
         return getCypherBodyIndividualParams(query, properties);
     }
 
-    public JsonObject getCypherBodyCollectionParams(String query, CypherQueryProperties properties) {
+    public JsonObject getCypherBodyCollectionParams(String query, QueryParams properties) {
 
         JsonObjectBuilder propertiesBuilder = Json.createObjectBuilder();
 
         if (properties != null) {
-            for(Map.Entry<String, Map<String, Object>> props : properties.getProperties().entrySet()) {
+            for(Map.Entry<String, Map<String, Object>> props : properties.getParams().entrySet()) {
 
                 JsonObjectBuilder propertyBuilder = Json.createObjectBuilder();
                 String propsName = props.getKey();
@@ -117,10 +117,10 @@ public class RequestBodyBuilderHelper {
         return bodyBuilder.build();
     }
 
-    public JsonObject getCypherBodyIndividualParams(String query, CypherQueryProperties params) {
+    public JsonObject getCypherBodyIndividualParams(String query, QueryParams params) {
 
-        String key = params.getProperties().keySet().iterator().next();
-        return getCypherBodyIndividualParams(query, params.getProperties().get(key));
+        String key = params.getParams().keySet().iterator().next();
+        return getCypherBodyIndividualParams(query, params.getParams().get(key));
 
     }
 }

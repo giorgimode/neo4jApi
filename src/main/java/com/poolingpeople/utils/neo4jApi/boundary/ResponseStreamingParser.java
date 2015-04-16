@@ -1,4 +1,4 @@
-package com.poolingpeople.utils.neo4jApi;
+package com.poolingpeople.utils.neo4jApi.boundary;
 
 import com.poolingpeople.utils.neo4jApi.parsing.StatementResult;
 import com.poolingpeople.utils.neo4jApi.parsing.StatementsContainer;

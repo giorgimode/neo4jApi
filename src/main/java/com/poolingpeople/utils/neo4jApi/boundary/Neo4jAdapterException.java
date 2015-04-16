@@ -1,4 +1,4 @@
-package com.poolingpeople.utils.neo4jApi;
+package com.poolingpeople.utils.neo4jApi.boundary;
 
 /**
  * Created by alacambra on 14/04/15.

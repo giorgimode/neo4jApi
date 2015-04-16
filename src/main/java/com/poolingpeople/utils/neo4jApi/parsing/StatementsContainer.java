@@ -1,8 +1,7 @@
 package com.poolingpeople.utils.neo4jApi.parsing;
 
-import com.poolingpeople.utils.neo4jApi.Neo4jAdapterException;
+import com.poolingpeople.utils.neo4jApi.boundary.Neo4jAdapterException;
 
-import java.beans.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

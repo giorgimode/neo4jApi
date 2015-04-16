@@ -1,4 +1,4 @@
-package com.poolingpeople.utils.neo4jApi;
+package com.poolingpeople.utils.neo4jApi.boundary;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -33,17 +33,17 @@ public class StatementBuilder {
      * @return
      */
 
-    public JsonObject getCypherBody(String query, CypherQueryProperties properties) {
-        return properties.getMode() == CypherQueryProperties.Mode.COLLECTION ?
+    public JsonObject getCypherBody(String query, QueryParams properties) {
+        return properties.getMode() == QueryParams.Mode.COLLECTION ?
                 getStatementCollectionParams(query, properties) : getStatementIndividualParams(query, properties);
     }
 
-    public JsonObject getStatementCollectionParams(String query, CypherQueryProperties properties) {
+    public JsonObject getStatementCollectionParams(String query, QueryParams properties) {
 
         JsonObjectBuilder propertiesBuilder = Json.createObjectBuilder();
 
         if (properties != null) {
-            for (Map.Entry<String, Map<String, Object>> props : properties.getProperties().entrySet()) {
+            for (Map.Entry<String, Map<String, Object>> props : properties.getParams().entrySet()) {
 
                 JsonObjectBuilder propertyBuilder = Json.createObjectBuilder();
                 String propsName = props.getKey();
@@ -77,11 +77,11 @@ public class StatementBuilder {
         return statementBuilder.build();
     }
 
-    public JsonObject getStatementIndividualParams(String query, CypherQueryProperties properties) {
+    public JsonObject getStatementIndividualParams(String query, QueryParams properties) {
 
 
         JsonObjectBuilder propsBuilder = Json.createObjectBuilder();
-        Map<String, Object> params = properties.getProperties().values().iterator().next();
+        Map<String, Object> params = properties.getParams().values().iterator().next();
 
         if (params != null)
             for (Map.Entry<String, Object> param : params.entrySet()) {

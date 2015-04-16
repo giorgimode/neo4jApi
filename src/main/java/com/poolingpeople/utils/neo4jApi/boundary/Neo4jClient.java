@@ -1,4 +1,4 @@
-package com.poolingpeople.utils.neo4jApi;
+package com.poolingpeople.utils.neo4jApi.boundary;
 
 import java.util.Collection;
 import java.util.List;
@@ -33,7 +33,7 @@ public class Neo4jClient {
      * <i>match (person) return person.uuid as uuid, person.name as name</i>
      * @return
      */
-    public List<Map<String, Object>> cypherPropertiesQuery(){
+    public List<Map<String, Object>> cypherParamsQuery(){
 
         return null;
     }

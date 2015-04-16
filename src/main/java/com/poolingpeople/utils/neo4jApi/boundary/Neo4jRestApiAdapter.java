@@ -1,4 +1,4 @@
-package com.poolingpeople.utils.neo4jApi;
+package com.poolingpeople.utils.neo4jApi.boundary;
 
 
 import javax.inject.Inject;
@@ -37,7 +37,7 @@ public class Neo4jRestApiAdapter {
         this.endpoint = endpoint;
     }
 
-    public List<Map<String, Object>> runParametrizedCypherQuery(String query, CypherQueryProperties params) {
+    public List<Map<String, Object>> runParametrizedCypherQuery(String query, QueryParams params) {
         this.logger.log(Level.FINE, "Neo4j request with cypher query: " + query);
         Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query,params)));
         return responseParser.parseSimpleListOrException(response);
@@ -47,7 +47,7 @@ public class Neo4jRestApiAdapter {
         this.logger.log(Level.FINE, "Neo4j request with cypher query: " + query);
 
         return runParametrizedCypherQuery(query,
-                new CypherQueryProperties(CypherQueryProperties.Mode.INDIVIDUAL).add("id", params));
+                new QueryParams(QueryParams.Mode.INDIVIDUAL).add("id", params));
     }
 
     @Deprecated
@@ -55,7 +55,7 @@ public class Neo4jRestApiAdapter {
         return runParametrizedCypherQuery(query, new HashMap<>());
     }
     
-    public Collection<Map<String, Map<String, Object>>> runCypherQuery(String query, CypherQueryProperties params) {
+    public Collection<Map<String, Map<String, Object>>> runCypherQuery(String query, QueryParams params) {
         this.logger.log(Level.FINE, "Neo4j request with cypher query: " + query);
         Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query,params)));
         return responseParser.parseOrException(response);
@@ -64,10 +64,10 @@ public class Neo4jRestApiAdapter {
     public Collection<Map<String, Map<String, Object>>> runCypherQuery(String query, Map<String, Object> params) {
 
         this.logger.log(Level.FINE, "Neo4j request with cypher query: " + query);
-        return runCypherQuery(query, new CypherQueryProperties(CypherQueryProperties.Mode.INDIVIDUAL).add("id", params));
+        return runCypherQuery(query, new QueryParams(QueryParams.Mode.INDIVIDUAL).add("id", params));
     }
 
-    public Map<String, Object> getParametrizedSingleResult(String query, CypherQueryProperties params){
+    public Map<String, Object> getParametrizedSingleResult(String query, QueryParams params){
 
         List<Map<String, Object>> r = runParametrizedCypherQuery(query, params);
 
@@ -78,7 +78,7 @@ public class Neo4jRestApiAdapter {
         return r.get(0);
     }
 
-    public Map<String, Map<String, Object>> getSingleResult(String query, CypherQueryProperties params){
+    public Map<String, Map<String, Object>> getSingleResult(String query, QueryParams params){
 
         Collection<Map<String, Map<String, Object>>> r = runCypherQuery(query, params);
 

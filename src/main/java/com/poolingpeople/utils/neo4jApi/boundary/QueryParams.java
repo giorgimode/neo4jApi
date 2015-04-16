@@ -1,4 +1,4 @@
-package com.poolingpeople.utils.neo4jApi;
+package com.poolingpeople.utils.neo4jApi.boundary;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,20 +6,20 @@ import java.util.Map;
 /**
  * Created by alacambra on 19.02.15.
  */
-public class CypherQueryProperties {
+public class QueryParams {
 
-    Map<String, Map<String, Object>> properties = new HashMap<>();
+    Map<String, Map<String, Object>> params = new HashMap<>();
     Mode mode = Mode.COLLECTION;
     public static final String defaultKey = "individual_default";
 
-    public CypherQueryProperties(Mode mode) {
+    public QueryParams(Mode mode) {
         this.mode = mode;
         if(mode == Mode.INDIVIDUAL){
             addId(defaultKey);
         }
     }
 
-    public CypherQueryProperties() {
+    public QueryParams() {
         this(Mode.INDIVIDUAL);
     }
 
@@ -43,17 +43,17 @@ public class CypherQueryProperties {
 
             addId(id);
 
-            properties.get(id).put(key, value);
+            params.get(id).put(key, value);
             return this;
         }
 
-        public CypherQueryProperties done(String key, Object value){
+        public QueryParams done(String key, Object value){
             add(key, value);
             return done();
         }
 
-        public CypherQueryProperties done(){
-            return CypherQueryProperties.this;
+        public QueryParams done(){
+            return QueryParams.this;
         }
     }
 
@@ -61,59 +61,59 @@ public class CypherQueryProperties {
         return new Subproperties(id);
     }
 
-    public CypherQueryProperties add(String id, String key, Object value){
+    public QueryParams add(String id, String key, Object value){
 
         addId(id);
-        properties.get(id).put(key, value);
+        params.get(id).put(key, value);
         return this;
     }
 
-    public CypherQueryProperties add(String id, Map<String, Object> props){
+    public QueryParams add(String id, Map<String, Object> props){
 
         addId(id);
-        properties.get(id).putAll(props);
+        params.get(id).putAll(props);
 
         return this;
     }
 
-    public CypherQueryProperties add(Map<String, Object> props){
+    public QueryParams add(Map<String, Object> props){
 
         if(mode != Mode.INDIVIDUAL)
             throw new Neo4jException("This method is allowed only for INDIVIDUAL params");
 
-        properties.get(defaultKey).putAll(props);
+        params.get(defaultKey).putAll(props);
         return this;
     }
 
-    public CypherQueryProperties add(String key, Object value){
+    public QueryParams add(String key, Object value){
 
         if(mode != Mode.INDIVIDUAL)
             throw new Neo4jException("This method is allowed only for INDIVIDUAL params");
 
-        properties.get(defaultKey).put(key, value);
+        params.get(defaultKey).put(key, value);
         return this;
     }
 
     private void addId(String key){
-        if(!properties.containsKey(key)){
+        if(!params.containsKey(key)){
 
-            if(properties.containsKey(defaultKey)){
-                properties.remove(defaultKey);
+            if(params.containsKey(defaultKey)){
+                params.remove(defaultKey);
             }
 
-            if(properties.size() > 0 && mode == Mode.INDIVIDUAL){
-                throw new RuntimeException("Only one properties map allowed. Using individual mode");
+            if(params.size() > 0 && mode == Mode.INDIVIDUAL){
+                throw new RuntimeException("Only one params map allowed. Using individual mode");
             }
-            properties.put(key, new HashMap<>());
+            params.put(key, new HashMap<>());
         }
 
     }
 
-    public Map<String, Map<String, Object>> getProperties() {
-        return properties;
+    public Map<String, Map<String, Object>> getParams() {
+        return params;
     }
 
-    public CypherQueryProperties setMode(Mode mode) {
+    public QueryParams setMode(Mode mode) {
         if(mode == null)
             throw new IllegalArgumentException("mode can not be null");
 
