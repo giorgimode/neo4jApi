@@ -1,8 +1,10 @@
-package com.poolingpeople.utils.neo4jApi.boundary;
+package com.poolingpeople.utils.neo4jApi.control;
 
-import com.poolingpeople.utils.neo4jApi.parsing.StatementResult;
-import com.poolingpeople.utils.neo4jApi.parsing.StatementsContainer;
-import com.poolingpeople.utils.neo4jApi.parsing.states.StatesManager;
+import com.poolingpeople.utils.neo4jApi.boundary.Neo4jClientErrorException;
+import com.poolingpeople.utils.neo4jApi.boundary.Neo4jException;
+import com.poolingpeople.utils.neo4jApi.control.parsing.StatementResult;
+import com.poolingpeople.utils.neo4jApi.control.parsing.StatementsContainer;
+import com.poolingpeople.utils.neo4jApi.control.parsing.states.StatesManager;
 
 import javax.inject.Inject;
 import javax.json.*;

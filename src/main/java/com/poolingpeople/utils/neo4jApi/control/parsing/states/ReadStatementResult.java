@@ -1,7 +1,7 @@
-package com.poolingpeople.utils.neo4jApi.parsing.states;
+package com.poolingpeople.utils.neo4jApi.control.parsing.states;
 
-import com.poolingpeople.utils.neo4jApi.parsing.State;
-import com.poolingpeople.utils.neo4jApi.parsing.StatementsContainer;
+import com.poolingpeople.utils.neo4jApi.control.parsing.State;
+import com.poolingpeople.utils.neo4jApi.control.parsing.StatementsContainer;
 
 import javax.json.stream.JsonParser;
 

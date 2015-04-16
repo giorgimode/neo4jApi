@@ -1,6 +1,9 @@
 package com.poolingpeople.utils.neo4jApi.boundary;
 
 
+import com.poolingpeople.utils.neo4jApi.control.RequestBodyBuilderHelper;
+import com.poolingpeople.utils.neo4jApi.control.ResponseStreamingParser;
+
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;

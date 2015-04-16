@@ -1,7 +1,7 @@
-package com.poolingpeople.utils.neo4jApi.parsing;
+package com.poolingpeople.utils.neo4jApi.control.parsing;
 
 import java.util.*;
-import com.poolingpeople.utils.neo4jApi.parsing.StatementsContainer.Error;
+
 /**
  * Created by alacambra on 1/17/15.
  */
@@ -14,9 +14,9 @@ public class StatementResult {
     Integer currentColumnIndex;
     Map<String,Map<String,Object>> currentRow;
     Map<String,Object> currentColumnValue;
-    Error error;
+    StatementsContainer.Error error;
 
-    public void setError(Error error) {
+    public void setError(StatementsContainer.Error error) {
         this.error = error;
     }
 
@@ -58,7 +58,7 @@ public class StatementResult {
         currentColumnIndex++;
     }
 
-    public Error getError() {
+    public StatementsContainer.Error getError() {
         return error;
     }
 }

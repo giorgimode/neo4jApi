@@ -1,7 +1,6 @@
 package com.poolingpeople.utils.neo4jApi.boundary;
 
-import com.poolingpeople.utils.neo4jApi.boundary.QueryParams;
-import com.poolingpeople.utils.neo4jApi.boundary.RequestBodyBuilderHelper;
+import com.poolingpeople.utils.neo4jApi.control.RequestBodyBuilderHelper;
 import org.junit.Before;
 import org.junit.Test;
 

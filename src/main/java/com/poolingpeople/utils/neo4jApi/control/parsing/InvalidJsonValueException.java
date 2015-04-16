@@ -1,4 +1,4 @@
-package com.poolingpeople.utils.neo4jApi.parsing;
+package com.poolingpeople.utils.neo4jApi.control.parsing;
 
 /**
  * Created by alacambra on 1/18/15.

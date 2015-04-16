@@ -1,4 +1,4 @@
-package com.poolingpeople.utils.neo4jApi.parsing;
+package com.poolingpeople.utils.neo4jApi.control.parsing;
 
 import javax.json.stream.JsonParser;
 

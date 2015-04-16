@@ -1,4 +1,4 @@
-package com.poolingpeople.utils.neo4jApi.parsing;
+package com.poolingpeople.utils.neo4jApi.control.parsing;
 
 import com.poolingpeople.utils.neo4jApi.boundary.QueryParams;
 import org.junit.Before;

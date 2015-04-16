@@ -1,12 +1,10 @@
 package com.poolingpeople.utils.neo4jApi.control;
 
 import com.poolingpeople.utils.neo4jApi.boundary.QueryParams;
-import com.poolingpeople.utils.neo4jApi.boundary.StatementBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
 import javax.json.Json;
-import java.util.LinkedHashMap;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;

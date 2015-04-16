@@ -1,6 +1,8 @@
 package com.poolingpeople.utils.neo4jApi.boundary;
 
-import com.poolingpeople.utils.neo4jApi.parsing.states.StatesManager;
+import com.poolingpeople.utils.neo4jApi.control.RequestBodyBuilderHelper;
+import com.poolingpeople.utils.neo4jApi.control.ResponseStreamingParser;
+import com.poolingpeople.utils.neo4jApi.control.parsing.states.StatesManager;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,9 +25,7 @@ public class Neo4jRestApiAdapterST {
         cut = new Neo4jRestApiAdapter();
         cut.endpoint = new Endpoint();
         cut.helper = new RequestBodyBuilderHelper();
-        cut.responseParser = new ResponseStreamingParser();
-        cut.responseParser.statesManager = new StatesManager();
-//        new Weld().initialize().instance().select(Neo4jRestApiAdapter.class).get();
+        cut.responseParser = new ResponseStreamingParser(new StatesManager());
         cut.runCypherQuery("MATCH (n)\n" +
                 "OPTIONAL MATCH (n)-[r]-()\n" +
                 "DELETE n,r", new QueryParams());

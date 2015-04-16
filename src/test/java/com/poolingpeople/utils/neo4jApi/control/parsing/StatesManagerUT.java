@@ -1,6 +1,8 @@
-package com.poolingpeople.utils.neo4jApi.parsing;
+package com.poolingpeople.utils.neo4jApi.control.parsing;
 
-import com.poolingpeople.utils.neo4jApi.parsing.states.StatesManager;
+import com.poolingpeople.utils.neo4jApi.control.parsing.StatementResult;
+import com.poolingpeople.utils.neo4jApi.control.parsing.StatementsContainer;
+import com.poolingpeople.utils.neo4jApi.control.parsing.states.StatesManager;
 import org.junit.Before;
 import org.junit.Test;
 
