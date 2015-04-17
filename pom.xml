@@ -24,25 +24,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-jaxrs</artifactId>
-            <version>1.9.13</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client</artifactId>
-            <version>3.0.8.Final</version>
-            <scope>test</scope>
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.neo4j</groupId>-->
-            <!--<artifactId>neo4j-kernel</artifactId>-->
-            <!--<version>2.1.4</version>-->
-            <!--<scope>test</scope>-->
-            <!--<type>jar</type>-->
-        <!--</dependency>-->
-        <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
             <version>1.0.4</version>
@@ -60,23 +41,6 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.jboss.weld</groupId>-->
-            <!--<artifactId>weld-se</artifactId>-->
-            <!--<version>1.0.1-Final</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.neo4j</groupId>-->
-            <!--<artifactId>neo4j-kernel</artifactId>-->
-            <!--<version>${neo4j.version}</version>-->
-            <!--<type>test-jar</type>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.neo4j.app</groupId>-->
-            <!--<artifactId>neo4j-server</artifactId>-->
-            <!--<version>${neo4j.version}</version>-->
-        <!--</dependency>-->
 
     </dependencies>
     <build>
