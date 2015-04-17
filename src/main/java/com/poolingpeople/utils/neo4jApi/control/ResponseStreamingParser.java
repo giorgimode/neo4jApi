@@ -33,6 +33,12 @@ public class ResponseStreamingParser {
 
     public List<Map<String,Map<String,Object>>> parseSimpleStatementOrException(Response response){
 
+        Response.Status.Family codeFamily = response.getStatusInfo().getFamily();
+
+        if(codeFamily == Response.Status.Family.SERVER_ERROR){
+            throw new Neo4jException(response, "Neo4j reported 5xx error");
+        }
+
         StatementResult statementResult =
                 statesManager
                         .parse(response.readEntity(String.class))
@@ -67,21 +73,21 @@ public class ResponseStreamingParser {
         }
 
         List<List<Map<String,Map<String,Object>>>> statements = statesManager
-                        .parse(response.readEntity(String.class))
-                        .getStatementResults()
-                        .stream()
-                        .map(st -> st.getResultMixed()).collect(Collectors.toList());
+                .parse(response.readEntity(String.class))
+                .getStatementResults()
+                .stream()
+                .map(st -> st.getResultMixed()).collect(Collectors.toList());
 
         return statements;
-   }
+    }
 
     private Neo4jClientErrorException parseException(Response response){
 
         StatementsResultContainer.Error error =
                 statesManager
-                .parse(response.readEntity(InputStream.class))
-                .getSingleStatement()
-                .orElse(new StatementResult()).getError();
+                        .parse(response.readEntity(InputStream.class))
+                        .getSingleStatement()
+                        .orElse(new StatementResult()).getError();
 
         return new Neo4jClientErrorException(error.getMessage(), error.getCode(), error.getCode());
     }
