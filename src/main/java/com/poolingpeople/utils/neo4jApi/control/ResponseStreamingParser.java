@@ -69,17 +69,6 @@ public class ResponseStreamingParser {
         return statements;
     }
 
-    private Neo4jClientErrorException parseException(Response response){
-
-        StatementsResultContainer.Error error =
-                statesManager
-                        .parse(response.readEntity(InputStream.class))
-                        .getSingleStatement()
-                        .orElse(new StatementResult()).getError();
-
-        return new Neo4jClientErrorException(error.getMessage(), error.getCode(), error.getCode());
-    }
-
     private Neo4jClientErrorException parseException(StatementsResultContainer.Error error){
         return new Neo4jClientErrorException(error.getMessage(), error.getCode(), error.getCode());
     }

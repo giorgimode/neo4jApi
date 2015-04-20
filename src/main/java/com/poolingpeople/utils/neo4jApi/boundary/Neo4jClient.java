@@ -187,7 +187,7 @@ public class Neo4jClient {
 
             return c.values().stream().findFirst().get();
         }).map(entity -> {
-            if (entity.size() > 1) throw new Neo4jException();
+            if (entity.size() > 1) throw new Neo4jException("More than one entity found");
             return entity;
         }).findFirst().orElse(new HashMap<>());
     }
