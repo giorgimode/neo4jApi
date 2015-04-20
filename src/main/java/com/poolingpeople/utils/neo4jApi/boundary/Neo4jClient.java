@@ -32,8 +32,8 @@ public class Neo4jClient {
     @Inject
     Endpoint endpoint;
 
-    @Inject
-    MultiStatementBuilder multiStatementBuilder;
+//    @Inject
+//    MultiStatementBuilder multiStatementBuilder;
 
     /**
      * Rows with maps representing the entity attributes. The entity is only a column.
@@ -114,7 +114,7 @@ public class Neo4jClient {
      */
     public List<List<Map<String, Object>>> cypherOneColumnQuery(MultiStatementBuilder statements){
 
-        Response response = getCypherBuilder().post(Entity.json(multiStatementBuilder.build()));
+        Response response = getCypherBuilder().post(Entity.json(statements.build()));
         List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
         return r.stream().map( sts -> toOneColumn(sts)).collect(Collectors.toList());
     }
@@ -125,7 +125,7 @@ public class Neo4jClient {
      * @return
      */
     public List<List<Map<String, Map<String, Object>>>> cypherMultipleEntityColumnsQuery(MultiStatementBuilder statements){
-        Response response = getCypherBuilder().post(Entity.json(multiStatementBuilder.build()));
+        Response response = getCypherBuilder().post(Entity.json(statements.build()));
         List<List<Map<String,Map<String,Object>>>> res = responseParser.parseMultiStatementOrException(response);
         return res;
     }
@@ -136,7 +136,7 @@ public class Neo4jClient {
      * @return
      */
     public List<List<Map<String, Object>>> cypherParamsQuery(MultiStatementBuilder statements){
-        Response response = getCypherBuilder().post(Entity.json(multiStatementBuilder.build()));
+        Response response = getCypherBuilder().post(Entity.json(statements.build()));
         List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
         return r.stream().map( sts -> toParams(sts)).collect(Collectors.toList());
     }
@@ -146,7 +146,7 @@ public class Neo4jClient {
      * <i>match (person:uuid{uuid:{uuid}}) return person</i>
      */
     public List<Map<String, Object>> cypherSingleEntityQuery(MultiStatementBuilder statements){
-        Response response = getCypherBuilder().post(Entity.json(multiStatementBuilder.build()));
+        Response response = getCypherBuilder().post(Entity.json(statements.build()));
         List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
         return r.stream().map( sts -> toSingleEntity(sts)).collect(Collectors.toList());
     }
@@ -156,7 +156,7 @@ public class Neo4jClient {
      * <i>match (person:uuid{uuid:{uuid}}) return person.email as email</i>
      */
     public List<Object> cypherSinglePropertyQuery(MultiStatementBuilder statements){
-        Response response = getCypherBuilder().post(Entity.json(multiStatementBuilder.build()));
+        Response response = getCypherBuilder().post(Entity.json(statements.build()));
         List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
         return r.stream().map( sts -> toSingleProperty(sts)).collect(Collectors.toList());
     }

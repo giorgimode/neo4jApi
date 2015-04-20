@@ -72,8 +72,8 @@ public class ResponseStreamingParser {
             throw parseException(resultContainer.getError());
         }
 
-        List<List<Map<String,Map<String,Object>>>> statements = statesManager
-                .parse(response.readEntity(String.class))
+        List<List<Map<String,Map<String,Object>>>> statements =
+                resultContainer
                 .getStatementResults()
                 .stream()
                 .map(st -> st.getResultMixed()).collect(Collectors.toList());

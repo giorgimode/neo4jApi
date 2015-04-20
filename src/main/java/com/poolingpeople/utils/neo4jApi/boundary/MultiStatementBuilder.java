@@ -1,5 +1,10 @@
 package com.poolingpeople.utils.neo4jApi.boundary;
 
+import com.poolingpeople.utils.neo4jApi.control.RequestBodyBuilderHelper;
+import com.poolingpeople.utils.neo4jApi.control.StatementBuilder;
+import com.poolingpeople.utils.neo4jApi.control.parsing.State;
+
+import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
@@ -15,6 +20,9 @@ public class MultiStatementBuilder {
     Logger logger = Logger.getLogger(this.getClass().getName());
     private static final String statements = "statements";
 
+    @Inject
+    StatementBuilder helper = new StatementBuilder();
+
     Collection<JsonObject> statementsList = new ArrayList<>();
 
     private MultiStatementBuilder(){
@@ -27,6 +35,11 @@ public class MultiStatementBuilder {
 
     public MultiStatementBuilder add(JsonObject statement){
         statementsList.add(statement);
+        return this;
+    }
+
+    public MultiStatementBuilder add(String query,  HasQueryParams params){
+        statementsList.add(helper.getCypherBody(query, params));
         return this;
     }
 
