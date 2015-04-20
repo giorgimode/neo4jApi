@@ -39,16 +39,15 @@ public class ResponseStreamingParser {
             throw new Neo4jException(response, "Neo4j reported 5xx error");
         }
 
-        StatementResult statementResult =
+        StatementsResultContainer statementResult =
                 statesManager
-                        .parse(response.readEntity(String.class))
-                        .getSingleStatement()
-                        .orElse(new StatementResult());
+                        .parse(response.readEntity(String.class));
 
         if(statementResult.getError() != null){
             throw parseException(statementResult.getError());
         } else {
-            return statementResult.getResultMixed();
+            return statementResult.getSingleStatement()
+                    .orElse(new StatementResult()).getResultMixed();
         }
     }
 
@@ -62,9 +61,9 @@ public class ResponseStreamingParser {
 
         List<List<Map<String,Map<String,Object>>>> statements =
                 resultContainer
-                .getStatementResults()
-                .stream()
-                .map(st -> st.getResultMixed()).collect(Collectors.toList());
+                        .getStatementResults()
+                        .stream()
+                        .map(st -> st.getResultMixed()).collect(Collectors.toList());
 
         return statements;
     }
