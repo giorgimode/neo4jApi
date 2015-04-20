@@ -1,7 +1,7 @@
 package com.poolingpeople.utils.neo4jApi.boundary;
 
-import com.poolingpeople.utils.neo4jApi.control.RequestBodyBuilderHelper;
 import com.poolingpeople.utils.neo4jApi.control.ResponseStreamingParser;
+import com.poolingpeople.utils.neo4jApi.control.StatementBuilder;
 
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
@@ -21,8 +21,11 @@ import java.util.stream.Collectors;
  */
 public class Neo4jClient {
 
+//    @Inject
+//    RequestBodyBuilderHelper helper;
+
     @Inject
-    RequestBodyBuilderHelper helper;
+    StatementBuilder helper;
 
     Logger logger = Logger.getLogger(this.getClass().getName());
 
@@ -43,7 +46,7 @@ public class Neo4jClient {
     public List<Map<String, Object>> cypherOneColumnQuery(String query, HasQueryParams params){
 
         this.logger.log(Level.FINE, query);
-        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, params)));
+        Response response = getCypherBuilder().post(Entity.json(MultiStatementBuilder.begin().add(helper.getCypherBody(query, params))));
         List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
         List<Map<String, Object>> res = toOneColumn(r);
 
@@ -58,7 +61,7 @@ public class Neo4jClient {
     public List<Map<String, Map<String, Object>>> cypherMultipleEntityColumnsQuery(String query, HasQueryParams params){
 
         this.logger.log(Level.FINE, query);
-        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, params)));
+        Response response = getCypherBuilder().post(Entity.json(MultiStatementBuilder.begin().add(helper.getCypherBody(query, params))));
         List<Map<String,Map<String,Object>>> res = responseParser.parseSimpleStatementOrException(response);
 
         return res;
@@ -73,7 +76,7 @@ public class Neo4jClient {
 
         this.logger.log(Level.FINE, query);
 
-        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, params)));
+        Response response = getCypherBuilder().post(Entity.json(MultiStatementBuilder.begin().add(helper.getCypherBody(query, params))));
         List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
         List<Map<String, Object>> res = toParams(r);
 
@@ -87,7 +90,7 @@ public class Neo4jClient {
     public Map<String, Object> cypherSingleEntityQuery(String query, HasQueryParams params){
 
         this.logger.log(Level.FINE, query);
-        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, params)));
+        Response response = getCypherBuilder().post(Entity.json(MultiStatementBuilder.begin().add(helper.getCypherBody(query, params))));
         List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
         Map<String, Object> res = toSingleEntity(r);
         return res;
@@ -100,7 +103,7 @@ public class Neo4jClient {
      */
     public Object cypherSinglePropertyQuery(String query, HasQueryParams params){
         this.logger.log(Level.FINE, query);
-        Response response = getCypherBuilder().post(Entity.json(helper.getCypherBody(query, params)));
+        Response response = getCypherBuilder().post(Entity.json(MultiStatementBuilder.begin().add(helper.getCypherBody(query, params))));
         List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
 
         Object res = toSingleProperty(r);
