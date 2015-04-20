@@ -50,18 +50,6 @@ public class ResponseStreamingParser {
         } else {
             return statementResult.getResultMixed();
         }
-
-
-//        Response.Status.Family codeFamily = response.getStatusInfo().getFamily();
-//
-//        switch (codeFamily){
-//            case CLIENT_ERROR:
-//                throw parseException(response);
-//            case SERVER_ERROR:
-//                throw new Neo4jException(response, "Neo4j reported 5xx error");
-//            default:
-//                return parse(response.readEntity(String.class));
-//        }
     }
 
     public List<List<Map<String,Map<String,Object>>>> parseMultiStatementOrException(Response response){
