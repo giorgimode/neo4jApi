@@ -4,6 +4,7 @@ import com.poolingpeople.utils.neo4jApi.control.ResponseStreamingParser;
 import com.poolingpeople.utils.neo4jApi.control.StatementBuilder;
 
 import javax.inject.Inject;
+import javax.json.JsonObject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -46,11 +47,17 @@ public class Neo4jClient {
     public List<Map<String, Object>> cypherOneColumnQuery(String query, HasQueryParams params){
 
         this.logger.log(Level.FINE, query);
-        Response response = getCypherBuilder().post(Entity.json(MultiStatementBuilder.begin().add(helper.getCypherBody(query, params)).build()));
+        Response response = sendRequest(new MultiStatementBuilder().add(helper.getCypherBody(query, params)).build());
         List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
         List<Map<String, Object>> res = toOneColumn(r);
 
         return res;
+    }
+
+    private Response sendRequest(JsonObject body){
+        logger.fine(body.toString());
+        Response response = getCypherBuilder().post(Entity.json(body));
+        return response;
     }
 
     /**
@@ -61,7 +68,7 @@ public class Neo4jClient {
     public List<Map<String, Map<String, Object>>> cypherMultipleEntityColumnsQuery(String query, HasQueryParams params){
 
         this.logger.log(Level.FINE, query);
-        Response response = getCypherBuilder().post(Entity.json(MultiStatementBuilder.begin().add(helper.getCypherBody(query, params)).build()));
+        Response response = sendRequest(new MultiStatementBuilder().add(helper.getCypherBody(query, params)).build());
         List<Map<String,Map<String,Object>>> res = responseParser.parseSimpleStatementOrException(response);
 
         return res;
@@ -75,8 +82,7 @@ public class Neo4jClient {
     public List<Map<String, Object>> cypherParamsQuery(String query, HasQueryParams params){
 
         this.logger.log(Level.FINE, query);
-
-        Response response = getCypherBuilder().post(Entity.json(MultiStatementBuilder.begin().add(helper.getCypherBody(query, params)).build()));
+        Response response = sendRequest(new MultiStatementBuilder().add(helper.getCypherBody(query, params)).build());
         List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
         List<Map<String, Object>> res = toParams(r);
 
@@ -90,12 +96,11 @@ public class Neo4jClient {
     public Map<String, Object> cypherSingleEntityQuery(String query, HasQueryParams params){
 
         this.logger.log(Level.FINE, query);
-        Response response = getCypherBuilder().post(Entity.json(MultiStatementBuilder.begin()
-                .add(helper.getCypherBody(query, params)).build()));
+        Response response = sendRequest(new MultiStatementBuilder().add(helper.getCypherBody(query, params)).build());
         List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
         Map<String, Object> res = toSingleEntity(r);
         return res;
-        
+
     }
 
     /**
@@ -104,8 +109,7 @@ public class Neo4jClient {
      */
     public Object cypherSinglePropertyQuery(String query, HasQueryParams params){
         this.logger.log(Level.FINE, query);
-        Response response = getCypherBuilder().post(Entity.json(MultiStatementBuilder.begin()
-                .add(helper.getCypherBody(query, params)).build()));
+        Response response = sendRequest(new MultiStatementBuilder().add(helper.getCypherBody(query, params)).build());
         List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
 
         Object res = toSingleProperty(r);
@@ -119,7 +123,7 @@ public class Neo4jClient {
      */
     public List<List<Map<String, Object>>> cypherOneColumnQuery(MultiStatementBuilder statements){
 
-        Response response = getCypherBuilder().post(Entity.json(statements.build()));
+        Response response = sendRequest(statements.build());
         List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
         return r.stream().map( sts -> toOneColumn(sts)).collect(Collectors.toList());
     }
@@ -185,15 +189,14 @@ public class Neo4jClient {
     }
 
     Map<String, Object> toSingleEntity(List<Map<String,Map<String,Object>>> sts){
-       return sts.stream().map(c -> {
+        return sts.stream().map(c -> {
             if(c.keySet().size() != 1){
                 throw new InvalidParameterException(c.keySet().size() + " column found");
             }
 
+            if (c.size() > 1) throw new Neo4jException("More than one entity found");
+
             return c.values().stream().findFirst().get();
-        }).map(entity -> {
-            if (entity.size() > 1) throw new Neo4jException("More than one entity found");
-            return entity;
         }).findFirst().orElse(new HashMap<>());
     }
 
@@ -221,7 +224,7 @@ public class Neo4jClient {
         return client.target(endpoint.getCypherEndpoint())
                 .request()
                 .header("Accept", "application/json; charset=UTF-8")
-                .header("Content-Type","application/json");
+                .header("Content-Type", "application/json");
     }
 
     public Neo4jClient setEndpoint(Endpoint endpoint) {
