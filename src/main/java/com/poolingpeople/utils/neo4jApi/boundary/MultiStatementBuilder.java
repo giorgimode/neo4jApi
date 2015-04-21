@@ -1,6 +1,5 @@
 package com.poolingpeople.utils.neo4jApi.boundary;
 
-import com.poolingpeople.utils.neo4jApi.control.RequestBodyBuilderHelper;
 import com.poolingpeople.utils.neo4jApi.control.StatementBuilder;
 import com.poolingpeople.utils.neo4jApi.control.parsing.State;
 
@@ -25,7 +24,7 @@ public class MultiStatementBuilder {
 
     Collection<JsonObject> statementsList = new ArrayList<>();
 
-    private MultiStatementBuilder(){
+    public MultiStatementBuilder(){
 
     }
 

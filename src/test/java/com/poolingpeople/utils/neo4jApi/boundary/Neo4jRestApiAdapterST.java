@@ -1,7 +1,7 @@
 package com.poolingpeople.utils.neo4jApi.boundary;
 
-import com.poolingpeople.utils.neo4jApi.control.RequestBodyBuilderHelper;
 import com.poolingpeople.utils.neo4jApi.control.ResponseStreamingParser;
+import com.poolingpeople.utils.neo4jApi.control.StatementBuilder;
 import com.poolingpeople.utils.neo4jApi.control.parsing.states.StatesManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,15 +18,15 @@ import static org.junit.Assert.assertTrue;
 
 public class Neo4jRestApiAdapterST {
 
-//    Neo4jRestApiAdapter cut;
+//    Neo4jClient cut;
 //
 //    @Before
 //    public void setUp() throws Exception {
-//        cut = new Neo4jRestApiAdapter();
+//        cut = new Neo4jClient();
 //        cut.endpoint = new Endpoint();
-//        cut.helper = new RequestBodyBuilderHelper();
+//        cut.helper = new StatementBuilder();
 //        cut.responseParser = new ResponseStreamingParser(new StatesManager());
-//        cut.runCypherQuery("MATCH (n)\n" +
+//        cut.("MATCH (n)\n" +
 //                "OPTIONAL MATCH (n)-[r]-()\n" +
 //                "DELETE n,r", new QueryCollectionParam());
 //    }
@@ -38,22 +38,11 @@ public class Neo4jRestApiAdapterST {
 //    }
 //
 //    @Test
-//    public void testCreateQuery(){
-//
-//        Collection<Map<String, Map<String, Object>>> r = cut.runCypherQuery(createQuery(),
-//                new QueryCollectionParam().forId("props").add("start", 1).add("end", 2).done("period", 7)
-//        );
-//
-//        assertThat(r.size(), is(1));
-//        assertThat(r.iterator().next().get("total").get("total"), is(1L));
-//    }
-//
-//    @Test
 //    public void testCreateQuery_exception(){
 //
 //        try {
 //
-//            Collection<Map<String, Map<String, Object>>> r = cut.runCypherQuery(createQuery(),
+//            Collection<Map<String, Map<String, Object>>> r = cut.cypherMultipleEntityColumnsQuery(createQuery(),
 //                    new QueryCollectionParam().forId("falseProp").add("start", 1).add("end", 2).done("period", 7)
 //            );
 //

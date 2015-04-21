@@ -231,4 +231,12 @@ public class Neo4jClient {
         this.endpoint = endpoint;
         return this;
     }
+
+    public void manipulativeQuery(String query, HasQueryParams params){
+        manipulativeQuery(new MultiStatementBuilder().add(query, params));
+    }
+
+    public void manipulativeQuery(MultiStatementBuilder statements){
+        getCypherBuilder().post(Entity.json(statements.build()));
+    }
 }
