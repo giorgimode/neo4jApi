@@ -8,6 +8,15 @@ public class Statement {
     String query;
     QueryParams params = new QueryParams();
 
+    public Statement(String query, QueryParams params) {
+        this.query = query;
+        this.params = params;
+    }
+
+    public Statement(){
+
+    }
+
     public Statement setQuery(String query) {
         this.query = query;
         return this;
@@ -20,5 +29,13 @@ public class Statement {
 
     public void setParams(QueryParams params) {
         this.params = params;
+    }
+
+    public QueryParams getParams() {
+        return params;
+    }
+
+    public String getQuery() {
+        return query;
     }
 }

@@ -44,10 +44,10 @@ public class Neo4jClient {
      * <i>match (person) return person</i>
      * @return
      */
-    public List<Map<String, Object>> cypherOneColumnQuery(String query, HasQueryParams params){
+    public List<Map<String, Object>> cypherOneColumnQuery(Statement statement){
 
-        this.logger.log(Level.FINE, query);
-        Response response = sendRequest(new MultiStatementBuilder().add(helper.getCypherBody(query, params)).build());
+        this.logger.log(Level.FINE, statement.getQuery());
+        Response response = sendRequest(new MultiStatementBuilder().add(helper.getCypherBody(statement.getQuery(), statement.getParams())).build());
         List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
         List<Map<String, Object>> res = toOneColumn(r);
 
@@ -65,10 +65,10 @@ public class Neo4jClient {
      * <i>match (p:person)-[r:owns]->(target:uuid) return person, r, t</i>
      * @return
      */
-    public List<Map<String, Map<String, Object>>> cypherMultipleEntityColumnsQuery(String query, HasQueryParams params){
+    public List<Map<String, Map<String, Object>>> cypherMultipleEntityColumnsQuery(Statement statement){
 
-        this.logger.log(Level.FINE, query);
-        Response response = sendRequest(new MultiStatementBuilder().add(helper.getCypherBody(query, params)).build());
+        this.logger.log(Level.FINE, statement.getQuery());
+        Response response = sendRequest(new MultiStatementBuilder().add(helper.getCypherBody(statement.getQuery(), statement.getParams())).build());
         List<Map<String,Map<String,Object>>> res = responseParser.parseSimpleStatementOrException(response);
 
         return res;
@@ -79,10 +79,10 @@ public class Neo4jClient {
      * <i>match (person) return person.uuid as uuid, person.name as name</i>
      * @return
      */
-    public List<Map<String, Object>> cypherParamsQuery(String query, HasQueryParams params){
+    public List<Map<String, Object>> cypherParamsQuery(Statement statement){
 
-        this.logger.log(Level.FINE, query);
-        Response response = sendRequest(new MultiStatementBuilder().add(helper.getCypherBody(query, params)).build());
+        this.logger.log(Level.FINE, statement.getQuery());
+        Response response = sendRequest(new MultiStatementBuilder().add(helper.getCypherBody(statement.getQuery(), statement.getParams())).build());
         List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
         List<Map<String, Object>> res = toParams(r);
 
@@ -93,10 +93,10 @@ public class Neo4jClient {
      * Only one row representing the values of the entity
      * <i>match (person:uuid{uuid:{uuid}}) return person</i>
      */
-    public Map<String, Object> cypherSingleEntityQuery(String query, HasQueryParams params){
+    public Map<String, Object> cypherSingleEntityQuery(Statement statement){
 
-        this.logger.log(Level.FINE, query);
-        Response response = sendRequest(new MultiStatementBuilder().add(helper.getCypherBody(query, params)).build());
+        this.logger.log(Level.FINE, statement.getQuery());
+        Response response = sendRequest(new MultiStatementBuilder().add(helper.getCypherBody(statement.getQuery(), statement.getParams())).build());
         List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
         Map<String, Object> res = toSingleEntity(r);
         return res;
@@ -107,9 +107,9 @@ public class Neo4jClient {
      * Only one row representing the values of the entity
      * <i>match (person:uuid{uuid:{uuid}}) return person.email as email</i>
      */
-    public Object cypherSinglePropertyQuery(String query, HasQueryParams params){
-        this.logger.log(Level.FINE, query);
-        Response response = sendRequest(new MultiStatementBuilder().add(helper.getCypherBody(query, params)).build());
+    public Object cypherSinglePropertyQuery(Statement statement){
+        this.logger.log(Level.FINE, statement.getQuery());
+        Response response = sendRequest(new MultiStatementBuilder().add(helper.getCypherBody(statement.getQuery(), statement.getParams())).build());
         List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
 
         Object res = toSingleProperty(r);
@@ -237,8 +237,8 @@ public class Neo4jClient {
         return this;
     }
 
-    public void manipulativeQuery(String query, HasQueryParams params){
-        manipulativeQuery(new MultiStatementBuilder().add(query, params));
+    public void manipulativeQuery(Statement statement){
+        manipulativeQuery(new MultiStatementBuilder().add(statement.getQuery(), statement.getParams()));
     }
 
     public void manipulativeQuery(MultiStatementBuilder statements){
