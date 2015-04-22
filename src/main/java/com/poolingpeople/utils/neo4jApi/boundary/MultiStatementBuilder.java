@@ -37,8 +37,8 @@ public class MultiStatementBuilder {
         return this;
     }
 
-    public MultiStatementBuilder add(String query,  HasQueryParams params){
-        statementsList.add(helper.getCypherBody(query, params));
+    public MultiStatementBuilder add(Statement statement){
+        statementsList.add(helper.getCypherBody(statement.getQuery(), statement.getParams()));
         return this;
     }
 
