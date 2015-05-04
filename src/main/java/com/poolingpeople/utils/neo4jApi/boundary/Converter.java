@@ -11,6 +11,10 @@ import java.util.stream.Collectors;
  */
 public class Converter {
 
+    public static List<Map<String, Map<String, Object>>> identity(List<Map<String, Map<String, Object>>> sts){
+        return sts;
+    }
+
     /**
      * Rows with maps representing the entity attributes. The entity is only a column.
      * <i>match (person) return person</i>
