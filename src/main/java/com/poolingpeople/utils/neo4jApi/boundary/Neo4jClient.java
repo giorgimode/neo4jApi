@@ -134,6 +134,7 @@ public class Neo4jClient {
      * @return
      */
     public List<List<Map<String, Map<String, Object>>>> cypherMultipleEntityColumnsQuery(MultiStatementBuilder statements){
+        this.logger.log(Level.FINE, Entity.json(statements.build()).toString());
         Response response = getCypherBuilder().post(Entity.json(statements.build()));
         List<List<Map<String,Map<String,Object>>>> res = responseParser.parseMultiStatementOrException(response);
         return res;
