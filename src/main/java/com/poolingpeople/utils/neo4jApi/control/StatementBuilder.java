@@ -76,7 +76,7 @@ public class StatementBuilder {
         }
 
         JsonObjectBuilder statementBuilder = Json.createObjectBuilder()
-                .add(statement, query)
+                .add(statement, query.replace("CYPHER 2.0", "CYPHER 2.1"))
                 .add(parameters, propertiesBuilder);
 
         return statementBuilder.build();
@@ -107,7 +107,7 @@ public class StatementBuilder {
             }
 
         JsonObjectBuilder statementBuilder = Json.createObjectBuilder()
-                .add(statement, query)
+                .add(statement, query.replace("CYPHER 2.0", "CYPHER 2.1"))
                 .add(parameters, propsBuilder);
 
         return statementBuilder.build();
