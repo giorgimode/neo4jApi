@@ -49,7 +49,7 @@ public class Neo4jClient {
         this.logger.log(Level.FINE, statement.getQuery());
         Response response = sendRequest(new MultiStatementBuilder().add(statement).build());
         List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
-        List<Map<String, Object>> res = toOneColumn(r);
+        List<Map<String, Object>> res = Converter.toOneColumn(r);
 
         return res;
     }
@@ -84,7 +84,7 @@ public class Neo4jClient {
         this.logger.log(Level.FINE, statement.getQuery());
         Response response = sendRequest(new MultiStatementBuilder().add(statement).build());
         List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
-        List<Map<String, Object>> res = toParams(r);
+        List<Map<String, Object>> res = Converter.toParams(r);
 
         return res;
     }
@@ -98,7 +98,7 @@ public class Neo4jClient {
         this.logger.log(Level.FINE, statement.getQuery());
         Response response = sendRequest(new MultiStatementBuilder().add(statement).build());
         List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
-        Map<String, Object> res = toSingleEntity(r);
+        Map<String, Object> res = Converter.toSingleEntity(r);
         return res;
 
     }
@@ -112,7 +112,7 @@ public class Neo4jClient {
         Response response = sendRequest(new MultiStatementBuilder().add(statement).build());
         List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
 
-        Object res = toSingleProperty(r);
+        Object res = Converter.toSingleProperty(r);
         return res;
     }
 
@@ -125,7 +125,7 @@ public class Neo4jClient {
 
         Response response = sendRequest(statements.build());
         List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
-        return r.stream().map( sts -> toOneColumn(sts)).collect(Collectors.toList());
+        return r.stream().map( sts -> Converter.toOneColumn(sts)).collect(Collectors.toList());
     }
 
     /**
@@ -148,7 +148,7 @@ public class Neo4jClient {
     public List<List<Map<String, Object>>> cypherParamsQuery(MultiStatementBuilder statements){
         Response response = getCypherBuilder().post(Entity.json(statements.build()));
         List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
-        return r.stream().map( sts -> toParams(sts)).collect(Collectors.toList());
+        return r.stream().map( sts -> Converter.toParams(sts)).collect(Collectors.toList());
     }
 
     /**
@@ -158,7 +158,7 @@ public class Neo4jClient {
     public List<Map<String, Object>> cypherSingleEntityQuery(MultiStatementBuilder statements){
         Response response = getCypherBuilder().post(Entity.json(statements.build()));
         List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
-        return r.stream().map( sts -> toSingleEntity(sts)).collect(Collectors.toList());
+        return r.stream().map( sts -> Converter.toSingleEntity(sts)).collect(Collectors.toList());
     }
 
     /**
@@ -168,56 +168,7 @@ public class Neo4jClient {
     public List<Object> cypherSinglePropertyQuery(MultiStatementBuilder statements){
         Response response = getCypherBuilder().post(Entity.json(statements.build()));
         List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
-        return r.stream().map( sts -> toSingleProperty(sts)).collect(Collectors.toList());
-    }
-
-    List<Map<String, Object>> toOneColumn(List<Map<String, Map<String, Object>>> sts){
-        return sts.stream().map(c -> {
-
-            if(c.keySet().size() != 1) throw new InvalidParameterException(c.keySet().size() + " column found");
-            return c.values().stream().findFirst().get();
-
-        }).collect(Collectors.toList());
-    }
-
-    List<Map<String, Object>> toParams(List<Map<String,Map<String,Object>>> sts){
-        return sts.stream().map(c -> {
-                    Map<String, Object> map = new HashMap<>();
-                    map.keySet().stream().forEach(k -> map.put(k, c.get(k).get(k)));
-                    return map;
-                }
-        ).collect(Collectors.toList());
-    }
-
-    Map<String, Object> toSingleEntity(List<Map<String,Map<String,Object>>> sts){
-        return sts.stream().map(c -> {
-            if(c.keySet().size() != 1){
-                throw new InvalidParameterException(c.keySet().size() + " column found");
-            }
-
-            if (c.size() > 1) throw new Neo4jException("More than one entity found");
-
-            return c.values().stream().findFirst().get();
-        }).findFirst().orElse(new HashMap<>());
-    }
-
-    Object toSingleProperty(List<Map<String, Map<String, Object>>> sts){
-
-        Object obj = sts.stream().map(c -> {
-            if(c.keySet().size() != 1){
-                throw new InvalidParameterException(c.keySet().size() + " column found");
-            }
-
-            return c.values().stream().findFirst().get();
-        }).map(entity -> {
-
-            if(entity.size() > 1) throw new Neo4jException("More than one result returned");
-            if(entity.values().size() > 1) throw new Neo4jException("More than one column found");
-            return entity.values().iterator().next();
-
-        }).findFirst().orElse(null);
-
-        return obj;
+        return r.stream().map( sts -> Converter.toSingleProperty(sts)).collect(Collectors.toList());
     }
 
     private javax.ws.rs.client.Invocation.Builder getCypherBuilder(){
