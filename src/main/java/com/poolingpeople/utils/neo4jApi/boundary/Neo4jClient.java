@@ -122,7 +122,7 @@ public class Neo4jClient {
      * @return
      */
     public List<List<Map<String, Object>>> cypherOneColumnQuery(MultiStatementBuilder statements){
-
+        this.logger.log(Level.FINE, statements.build().toString());
         Response response = sendRequest(statements.build());
         List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
         return r.stream().map( sts -> Converter.toOneColumn(sts)).collect(Collectors.toList());
@@ -146,6 +146,7 @@ public class Neo4jClient {
      * @return
      */
     public List<List<Map<String, Object>>> cypherParamsQuery(MultiStatementBuilder statements){
+        this.logger.log(Level.FINE, statements.build().toString());
         Response response = getCypherBuilder().post(Entity.json(statements.build()));
         List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
         return r.stream().map( sts -> Converter.toParams(sts)).collect(Collectors.toList());
@@ -156,6 +157,7 @@ public class Neo4jClient {
      * <i>match (person:uuid{uuid:{uuid}}) return person</i>
      */
     public List<Map<String, Object>> cypherSingleEntityQuery(MultiStatementBuilder statements){
+        this.logger.log(Level.FINE, statements.build().toString());
         Response response = getCypherBuilder().post(Entity.json(statements.build()));
         List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
         return r.stream().map( sts -> Converter.toSingleEntity(sts)).collect(Collectors.toList());
@@ -166,6 +168,7 @@ public class Neo4jClient {
      * <i>match (person:uuid{uuid:{uuid}}) return person.email as email</i>
      */
     public List<Object> cypherSinglePropertyQuery(MultiStatementBuilder statements){
+        this.logger.log(Level.FINE, statements.build().toString());
         Response response = getCypherBuilder().post(Entity.json(statements.build()));
         List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
         return r.stream().map( sts -> Converter.toSingleProperty(sts)).collect(Collectors.toList());
