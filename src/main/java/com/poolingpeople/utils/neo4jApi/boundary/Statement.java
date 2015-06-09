@@ -13,9 +13,7 @@ public class Statement {
         this.params = params;
     }
 
-    public Statement(){
-
-    }
+    public Statement(){}
 
     public Statement setQuery(String query) {
         this.query = query;
