@@ -83,4 +83,20 @@ public class Converter {
         return obj;
     }
 
+    public static String toSingleStringProperty(List<Map<String, Map<String, Object>>> sts){
+        return (String)toSingleProperty(sts);
+    }
+
+    public static Boolean toSingleBooleanProperty(List<Map<String, Map<String, Object>>> sts){
+        return (Boolean)toSingleProperty(sts);
+    }
+
+    public static Integer toIntegerIntegerProperty(List<Map<String, Map<String, Object>>> sts){
+        return (Integer)toSingleProperty(sts);
+    }
+
+    public static Long toSingleLongProperty(List<Map<String, Map<String, Object>>> sts){
+        return (Long)toSingleProperty(sts);
+    }
+
 }
