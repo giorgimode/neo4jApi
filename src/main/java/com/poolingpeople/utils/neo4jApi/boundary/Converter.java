@@ -37,7 +37,7 @@ public class Converter {
     public static List<Map<String, Object>> toParams(List<Map<String,Map<String,Object>>> sts){
         return sts.stream().map(c -> {
                     Map<String, Object> map = new HashMap<>();
-                    map.keySet().stream().forEach(k -> map.put(k, c.get(k).get(k)));
+                    c.keySet().stream().forEach(k -> map.put(k, c.get(k).get(k)));
                     return map;
                 }
         ).collect(Collectors.toList());
