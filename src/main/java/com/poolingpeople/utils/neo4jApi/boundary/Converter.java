@@ -37,7 +37,7 @@ public class Converter {
     public static List<Map<String, Object>> toParams(List<Map<String,Map<String,Object>>> sts){
         return sts.stream().map(c -> {
                     Map<String, Object> map = new HashMap<>();
-                    map.keySet().stream().forEach(k -> map.put(k, c.get(k).get(k)));
+                    c.keySet().stream().forEach(k -> map.put(k, c.get(k).get(k)));
                     return map;
                 }
         ).collect(Collectors.toList());
@@ -81,6 +81,22 @@ public class Converter {
         }).findFirst().orElse(null);
 
         return obj;
+    }
+
+    public static String toSingleStringProperty(List<Map<String, Map<String, Object>>> sts){
+        return (String)toSingleProperty(sts);
+    }
+
+    public static Boolean toSingleBooleanProperty(List<Map<String, Map<String, Object>>> sts){
+        return (Boolean)toSingleProperty(sts);
+    }
+
+    public static Integer toIntegerIntegerProperty(List<Map<String, Map<String, Object>>> sts){
+        return (Integer)toSingleProperty(sts);
+    }
+
+    public static Long toSingleLongProperty(List<Map<String, Map<String, Object>>> sts){
+        return (Long)toSingleProperty(sts);
     }
 
 }
