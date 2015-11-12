@@ -48,9 +48,9 @@ cut.beginTransaction();
         try {
 
             List<Map<String, Object>> r = cut.cypherParamsQuery(new Statement(query, params));
-
+            System.out.println(r);
         }catch (Neo4jClientErrorException e){
-        //    assertThat("Expected a parameter named props", is(e.getMessage()));
+            assertThat("Expected a parameter named props", is(e.getMessage()));
         }
 
 cut.commitTransaction();

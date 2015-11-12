@@ -176,21 +176,16 @@ public class Neo4jClient {
 
     public void beginTransaction(){
         System.out.println("beginning transaction!");
-
-        Response response = getCypherBuilder_TxBegin().post(Entity.json(helper.getStatementIndividualParams(new String(), new QueryParams())));
+        String query = "MATCH (n) RETURN count(n) as total";
+        Response response = getCypherBuilder_TxBegin().post(Entity.json(helper.getStatementIndividualParams(query, new QueryParams())));
         responseParser.parseMultiStatementOrException(response);
 
     }
 
     public void commitTransaction(){
         System.out.println("committing transaction!");
-        //getCypherBuilder_TxCommit().post(Entity.json(helper.getStatementIndividualParams(new String(), new QueryParams())));
-
-        String query = "CREATE (n:c{start:{start}}), (m:c{end:{end}}) return count(n) as total";
-        QueryParams params = new QueryParams().add("start", 5).add("end", 6);
-
-
-        getCypherBuilder_TxCommit().post(Entity.json(new MultiStatementBuilder().add(new Statement(query, params)).build()));
+        String query = "MATCH (n) return count(n) as total";
+        getCypherBuilder_TxCommit().post(Entity.json(new MultiStatementBuilder().add(new Statement(query, new QueryParams())).build()));
 
 
     }
