@@ -181,19 +181,15 @@ public class Neo4jClient {
     }
 
     public void beginTransaction() {
-        System.out.println("beginning transaction!");
-        String query = "MATCH (n) RETURN count(n) as total";
+        String query = "MATCH (n) RETURN count(n) as total LIMIT 1";
         Response response = getCypherBuilder(Transaction.BEGIN).post(Entity.json(helper.getStatementIndividualParams(query, new QueryParams())));
         responseParser.parseMultiStatementOrException(response);
 
     }
 
     public void commitTransaction() {
-        System.out.println("committing transaction!");
-        String query = "MATCH (n) return count(n) as total";
+        String query = "MATCH (n) return count(n) as total LIMIT 1";
         getCypherBuilder(Transaction.COMMIT).post(Entity.json(new MultiStatementBuilder().add(new Statement(query, new QueryParams())).build()));
-
-
     }
 
     private javax.ws.rs.client.Invocation.Builder getCypherBuilder(Transaction transactionType) {
