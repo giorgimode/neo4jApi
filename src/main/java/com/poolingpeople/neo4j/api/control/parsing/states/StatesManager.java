@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 public class StatesManager {
 
     Map<State.NAMES,State> states;
-    private String commitValue;
+    private String transactionID;
 
     Logger logger = Logger.getLogger(this.getClass().getName());
 
@@ -72,8 +72,7 @@ public class StatesManager {
                 throw new RuntimeException("state not found" + lastState);
             }
         }
-        System.out.println(statementContainer.getCommitValue());
-        setCommitValue(statementContainer.getCommitValue());
+        setTransactionID(statementContainer.getCommitValue());
 
         return statementContainer;
     }
@@ -83,13 +82,13 @@ public class StatesManager {
         return parse(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)));
     }
 
-    public String getCommitValue() {
-        return commitValue;
+    public String getTransactionID() {
+        return transactionID;
     }
 
 
-    public void setCommitValue(String commitValue) {
-        this.commitValue = Neo4jTransactionIdParser.transactionResponseURL(commitValue);
+    public void setTransactionID(String commitURI) {
+        transactionID = Neo4jTransactionIdParser.transactionResponseURL(commitURI);
     }
 
 

@@ -29,9 +29,10 @@ public class Neo4jRestApiAdapterST {
         cut.responseParser = new ResponseStreamingParser(statesManager);
         cut.endpoint.statesManager = statesManager;
 
-//        cut.("MATCH (n)\n" +
-//                "OPTIONAL MATCH (n)-[r]-()\n" +
-//                "DELETE n,r", new QueryCollectionParam());
+        cut.beginTransaction();
+        cut.cypherSingleEntityQuery(new Statement("MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n,r", new QueryParams()));
+
+
     }
 
     private String createQuery(){
@@ -44,7 +45,6 @@ public class Neo4jRestApiAdapterST {
     public void testCreateQuery_exception(){
         String query = "CREATE (n:c{start:{start}}), (m:c{end:{end}}) return count(n) as total";
         QueryParams params = new QueryParams().add("start", 5).add("end", 6);
-cut.beginTransaction();
         try {
 
             List<Map<String, Object>> r = cut.cypherParamsQuery(new Statement(query, params));
@@ -53,7 +53,7 @@ cut.beginTransaction();
             assertThat("Expected a parameter named props", is(e.getMessage()));
         }
 
-cut.commitTransaction();
+        cut.commitTransaction();
 
     }
 //
