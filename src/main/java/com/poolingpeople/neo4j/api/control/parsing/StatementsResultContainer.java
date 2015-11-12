@@ -14,6 +14,7 @@ public class StatementsResultContainer {
     List<StatementResult> statementResults = new ArrayList<>();
     StatementResult current;
     Error error;
+    String commitValue;
 
     public StatementResult startStatement(){
         current = new StatementResult();
@@ -81,5 +82,13 @@ public class StatementsResultContainer {
         }
     }
 
+    public void setCommitValue(String commitValue){
+        this.commitValue = commitValue;
+    }
+
+
+    public String getCommitValue() {
+        return commitValue;
+    }
 
 }

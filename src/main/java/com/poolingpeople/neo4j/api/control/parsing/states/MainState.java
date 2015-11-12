@@ -17,6 +17,12 @@ public class MainState implements State {
     public NAMES process(JsonParser parser, StatementsResultContainer statementsResultContainer) {
 
         JsonParser.Event event = parser.next();
+        if(event == JsonParser.Event.KEY_NAME && parser.getString().equals("commit")){
+            parser.next();
+
+            statementsResultContainer.setCommitValue(parser.getString());
+            return this.getName();
+        }
 
         if(event == JsonParser.Event.KEY_NAME && parser.getString().equals("results")){
             return readStatementResult;

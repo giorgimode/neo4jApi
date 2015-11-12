@@ -9,6 +9,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
+import java.net.URI;
 import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Map;
@@ -41,34 +42,36 @@ public class Neo4jClient {
     /**
      * Rows with maps representing the entity attributes. The entity is only a column.
      * <i>match (person) return person</i>
+     *
      * @return
      */
-    public List<Map<String, Object>> cypherOneColumnQuery(Statement statement){
+    public List<Map<String, Object>> cypherOneColumnQuery(Statement statement) {
 
         this.logger.log(Level.FINE, statement.getQuery());
         Response response = sendRequest(new MultiStatementBuilder().add(statement).build());
-        List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
+        List<Map<String, Map<String, Object>>> r = responseParser.parseSimpleStatementOrException(response);
         List<Map<String, Object>> res = Converter.toOneColumn(r);
 
         return res;
     }
 
-    private Response sendRequest(JsonObject body){
+    private Response sendRequest(JsonObject body) {
         logger.fine(body.toString());
-        Response response = getCypherBuilder().post(Entity.json(body));
+        Response response = getCypherBuilder(Transaction.RUN).post(Entity.json(body));
         return response;
     }
 
     /**
      * Rows with maps representing columns with maps with the entity attributes. Each column is a different entity.
      * <i>match (p:person)-[r:owns]->(target:uuid) return person, r, t</i>
+     *
      * @return
      */
-    public List<Map<String, Map<String, Object>>> cypherMultipleEntityColumnsQuery(Statement statement){
+    public List<Map<String, Map<String, Object>>> cypherMultipleEntityColumnsQuery(Statement statement) {
 
         this.logger.log(Level.FINE, statement.getQuery());
         Response response = sendRequest(new MultiStatementBuilder().add(statement).build());
-        List<Map<String,Map<String,Object>>> res = responseParser.parseSimpleStatementOrException(response);
+        List<Map<String, Map<String, Object>>> res = responseParser.parseSimpleStatementOrException(response);
 
         return res;
     }
@@ -76,13 +79,14 @@ public class Neo4jClient {
     /**
      * rows representing columns where each column is a single property
      * <i>match (person) return person.uuid as uuid, person.name as name</i>
+     *
      * @return
      */
-    public List<Map<String, Object>> cypherParamsQuery(Statement statement){
+    public List<Map<String, Object>> cypherParamsQuery(Statement statement) {
 
         this.logger.log(Level.FINE, statement.getQuery());
         Response response = sendRequest(new MultiStatementBuilder().add(statement).build());
-        List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
+        List<Map<String, Map<String, Object>>> r = responseParser.parseSimpleStatementOrException(response);
         List<Map<String, Object>> res = Converter.toParams(r);
 
         return res;
@@ -92,11 +96,11 @@ public class Neo4jClient {
      * Only one row representing the values of the entity
      * <i>match (person:uuid{uuid:{uuid}}) return person</i>
      */
-    public Map<String, Object> cypherSingleEntityQuery(Statement statement){
+    public Map<String, Object> cypherSingleEntityQuery(Statement statement) {
 
         this.logger.log(Level.FINE, statement.getQuery());
         Response response = sendRequest(new MultiStatementBuilder().add(statement).build());
-        List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
+        List<Map<String, Map<String, Object>>> r = responseParser.parseSimpleStatementOrException(response);
         Map<String, Object> res = Converter.toSingleEntity(r);
         return res;
 
@@ -106,10 +110,10 @@ public class Neo4jClient {
      * Only one row representing the values of the entity
      * <i>match (person:uuid{uuid:{uuid}}) return person.email as email</i>
      */
-    public Object cypherSinglePropertyQuery(Statement statement){
+    public Object cypherSinglePropertyQuery(Statement statement) {
         this.logger.log(Level.FINE, statement.getQuery());
         Response response = sendRequest(new MultiStatementBuilder().add(statement).build());
-        List<Map<String,Map<String,Object>>> r = responseParser.parseSimpleStatementOrException(response);
+        List<Map<String, Map<String, Object>>> r = responseParser.parseSimpleStatementOrException(response);
 
         Object res = Converter.toSingleProperty(r);
         return res;
@@ -118,72 +122,105 @@ public class Neo4jClient {
     /**
      * Rows with maps representing the entity attributes. The entity is only a column.
      * <i>match (person) return person</i>
+     *
      * @return
      */
-    public List<List<Map<String, Object>>> cypherOneColumnQuery(MultiStatementBuilder statements){
+    public List<List<Map<String, Object>>> cypherOneColumnQuery(MultiStatementBuilder statements) {
         this.logger.log(Level.FINE, statements.build().toString());
         Response response = sendRequest(statements.build());
-        List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
-        return r.stream().map( sts -> Converter.toOneColumn(sts)).collect(Collectors.toList());
+        List<List<Map<String, Map<String, Object>>>> r = responseParser.parseMultiStatementOrException(response);
+        return r.stream().map(sts -> Converter.toOneColumn(sts)).collect(Collectors.toList());
     }
 
     /**
      * Rows with maps representing columns with maps with the entity attributes. Each column is a different entity.
      * <i>match (p:person)-[r:owns]->(target:uuid) return person, r, t</i>
+     *
      * @return
      */
-    public List<List<Map<String, Map<String, Object>>>> cypherMultipleEntityColumnsQuery(MultiStatementBuilder statements){
+    public List<List<Map<String, Map<String, Object>>>> cypherMultipleEntityColumnsQuery(MultiStatementBuilder statements) {
         this.logger.log(Level.FINE, statements.build().toString());
-        Response response = getCypherBuilder().post(Entity.json(statements.build()));
-        List<List<Map<String,Map<String,Object>>>> res = responseParser.parseMultiStatementOrException(response);
+        Response response = getCypherBuilder(Transaction.RUN).post(Entity.json(statements.build()));
+        List<List<Map<String, Map<String, Object>>>> res = responseParser.parseMultiStatementOrException(response);
         return res;
     }
 
     /**
      * rows representing columns where each column is a single property
      * <i>match (person) return person.uuid as uuid, person.name as name</i>
+     *
      * @return
      */
-    public List<List<Map<String, Object>>> cypherParamsQuery(MultiStatementBuilder statements){
+    public List<List<Map<String, Object>>> cypherParamsQuery(MultiStatementBuilder statements) {
         this.logger.log(Level.FINE, statements.build().toString());
-        Response response = getCypherBuilder().post(Entity.json(statements.build()));
-        List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
-        return r.stream().map( sts -> Converter.toParams(sts)).collect(Collectors.toList());
+        Response response = getCypherBuilder(Transaction.RUN).post(Entity.json(statements.build()));
+        List<List<Map<String, Map<String, Object>>>> r = responseParser.parseMultiStatementOrException(response);
+        return r.stream().map(sts -> Converter.toParams(sts)).collect(Collectors.toList());
     }
 
     /**
      * Only one row representing the values of the entity
      * <i>match (person:uuid{uuid:{uuid}}) return person</i>
      */
-    public List<Map<String, Object>> cypherSingleEntityQuery(MultiStatementBuilder statements){
+    public List<Map<String, Object>> cypherSingleEntityQuery(MultiStatementBuilder statements) {
         this.logger.log(Level.FINE, statements.build().toString());
-        Response response = getCypherBuilder().post(Entity.json(statements.build()));
-        List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
-        return r.stream().map( sts -> Converter.toSingleEntity(sts)).collect(Collectors.toList());
+        Response response = getCypherBuilder(Transaction.RUN).post(Entity.json(statements.build()));
+        List<List<Map<String, Map<String, Object>>>> r = responseParser.parseMultiStatementOrException(response);
+        return r.stream().map(sts -> Converter.toSingleEntity(sts)).collect(Collectors.toList());
     }
 
     /**
      * Only one row representing the values of the entity
      * <i>match (person:uuid{uuid:{uuid}}) return person.email as email</i>
      */
-    public List<Object> cypherSinglePropertyQuery(MultiStatementBuilder statements){
+    public List<Object> cypherSinglePropertyQuery(MultiStatementBuilder statements) {
         this.logger.log(Level.FINE, statements.build().toString());
-        Response response = getCypherBuilder().post(Entity.json(statements.build()));
-        List<List<Map<String,Map<String,Object>>>> r = responseParser.parseMultiStatementOrException(response);
-        return r.stream().map( sts -> Converter.toSingleProperty(sts)).collect(Collectors.toList());
+        Response response = getCypherBuilder(Transaction.RUN).post(Entity.json(statements.build()));
+        List<List<Map<String, Map<String, Object>>>> r = responseParser.parseMultiStatementOrException(response);
+        return r.stream().map(sts -> Converter.toSingleProperty(sts)).collect(Collectors.toList());
     }
 
-    private javax.ws.rs.client.Invocation.Builder getCypherBuilder(){
+    public void beginTransaction() {
+        String query = "MATCH (n) RETURN count(n) as total LIMIT 1";
+        MultiStatementBuilder builder = new MultiStatementBuilder().add(helper.getStatementIndividualParams(query, new QueryParams()));
+        Response response = getCypherBuilder(Transaction.BEGIN).post(Entity.json(builder.build()));
+        responseParser.parseMultiStatementOrException(response);
+
+    }
+
+    public void commitTransaction() {
+        String query = "MATCH (n) return count(n) as total LIMIT 1";
+        getCypherBuilder(Transaction.COMMIT).post(Entity.json(new MultiStatementBuilder().add(new Statement(query, new QueryParams())).build()));
+    }
+
+    private javax.ws.rs.client.Invocation.Builder getCypherBuilder(Transaction transactionType) {
         Client client = ClientBuilder.newClient();
-        return client.target(endpoint.getCypherEndpoint())
+        URI uri;
+
+        switch (transactionType) {
+            case BEGIN:
+                uri = endpoint.getCypherEndpoint(Transaction.BEGIN);
+                break;
+            case RUN:
+                uri = endpoint.getCypherEndpoint(Transaction.RUN);
+                break;
+            default:
+                uri = endpoint.getCypherEndpoint(Transaction.COMMIT);
+                break;
+        }
+
+        return client.target(uri)
                 .request()
                 .header("Accept", "application/json; charset=UTF-8")
-                .header("Content-Type", "application/json");
+                .header("Content-Type", "application/json")
+                .header("X-Stream", "true");
+
+
     }
 
     public Neo4jClient setEndpoint(Endpoint endpoint) {
 
-        if(endpoint == null){
+        if (endpoint == null) {
             throw new InvalidParameterException("Endpoint can not be null");
         }
 
@@ -191,11 +228,15 @@ public class Neo4jClient {
         return this;
     }
 
-    public void manipulativeQuery(Statement statement){
+    public void manipulativeQuery(Statement statement) {
         manipulativeQuery(new MultiStatementBuilder().add(statement));
     }
 
-    public void manipulativeQuery(MultiStatementBuilder statements){
-        getCypherBuilder().post(Entity.json(statements.build()));
+    public void manipulativeQuery(MultiStatementBuilder statements) {
+        getCypherBuilder(Transaction.RUN).post(Entity.json(statements.build()));
+    }
+
+    public enum Transaction {
+        BEGIN, RUN, COMMIT
     }
 }

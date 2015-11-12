@@ -1,5 +1,6 @@
 package com.poolingpeople.neo4j.api.control.parsing.states;
 
+import com.poolingpeople.neo4j.api.boundary.Neo4jTransactionIdParser;
 import com.poolingpeople.neo4j.api.control.parsing.JsonValueReader;
 import com.poolingpeople.neo4j.api.control.parsing.State;
 import com.poolingpeople.neo4j.api.control.parsing.StatementsResultContainer;
@@ -19,6 +20,7 @@ import java.util.logging.Logger;
 public class StatesManager {
 
     Map<State.NAMES,State> states;
+    private String transactionID;
 
     Logger logger = Logger.getLogger(this.getClass().getName());
 
@@ -70,15 +72,24 @@ public class StatesManager {
                 throw new RuntimeException("state not found" + lastState);
             }
         }
+        setTransactionID(statementContainer.getCommitValue());
 
         return statementContainer;
     }
 
     public StatementsResultContainer parse(String json) {
+        System.out.println(json);
         return parse(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)));
     }
 
+    public String getTransactionID() {
+        return transactionID;
+    }
 
+
+    public void setTransactionID(String commitURI) {
+        transactionID = Neo4jTransactionIdParser.transactionResponseURL(commitURI);
+    }
 
 
 }
