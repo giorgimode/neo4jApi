@@ -217,6 +217,7 @@ public class Neo4jClient {
                 .header("Authorization", endpoint.getEncodedPassword());
 
 
+
     }
 
     public Neo4jClient setEndpoint(Endpoint endpoint) {
