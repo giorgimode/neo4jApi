@@ -24,6 +24,8 @@ public class Neo4jRestApiAdapterST {
     public void setUp() throws Exception {
         cut = new Neo4jClient();
         cut.endpoint = new Endpoint();
+        cut.endpoint.setUsername("neo4j");
+        cut.endpoint.setPassword("admin");
         cut.helper = new StatementBuilder();
         StatesManager statesManager = new StatesManager();
         cut.responseParser = new ResponseStreamingParser(statesManager);
@@ -44,7 +46,7 @@ public class Neo4jRestApiAdapterST {
     @Test
     public void testCreateQuery_exception(){
         String query = "CREATE (n:c{start:{start}}), (m:c{end:{end}}) return count(n) as total";
-        QueryParams params = new QueryParams().add("start", 5).add("end", 6);
+        QueryParams params = new QueryParams().add("start", 7).add("end", 8);
         try {
 
             List<Map<String, Object>> r = cut.cypherParamsQuery(new Statement(query, params));

@@ -8,8 +8,10 @@ package com.poolingpeople.neo4j.api.boundary;
 import com.poolingpeople.neo4j.api.control.parsing.states.StatesManager;
 
 import javax.inject.Inject;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,6 +25,9 @@ public class Endpoint {
 
     String host = "localhost";
     int port = 7474;
+    private String username;
+     private String password;
+
     Logger logger = Logger.getLogger(this.getClass().getName());
 
     public Endpoint() {
@@ -62,8 +67,38 @@ public class Endpoint {
         }
     }
 
+
+    public String getEncodedPassword() {
+        String originalCredentials = getUsername() +":" + getPassword();
+        System.out.println(originalCredentials);
+        String base64encodedCredentials="";
+        try {
+            base64encodedCredentials = Base64.getEncoder().encodeToString(originalCredentials.getBytes("utf-8"));
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return base64encodedCredentials;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
     @Override
     public String toString() {
         return getCypherEndpoint(Neo4jClient.Transaction.BEGIN).toString();
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

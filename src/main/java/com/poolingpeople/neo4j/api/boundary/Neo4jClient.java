@@ -182,7 +182,8 @@ public class Neo4jClient {
 
     public void beginTransaction() {
         String query = "MATCH (n) RETURN count(n) as total LIMIT 1";
-        Response response = getCypherBuilder(Transaction.BEGIN).post(Entity.json(helper.getStatementIndividualParams(query, new QueryParams())));
+        MultiStatementBuilder builder = new MultiStatementBuilder().add(helper.getStatementIndividualParams(query, new QueryParams()));
+        Response response = getCypherBuilder(Transaction.BEGIN).post(Entity.json(builder.build()));
         responseParser.parseMultiStatementOrException(response);
 
     }
@@ -212,7 +213,8 @@ public class Neo4jClient {
                 .request()
                 .header("Accept", "application/json; charset=UTF-8")
                 .header("Content-Type", "application/json")
-                .header("X-Stream", "true");
+                .header("X-Stream", "true")
+                .header("Authorization", endpoint.getEncodedPassword());
 
 
     }
